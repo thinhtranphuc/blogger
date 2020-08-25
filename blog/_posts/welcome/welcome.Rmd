@@ -1,6 +1,6 @@
 ---
 title: "Welcome to Whisky Page"
-description: |s
+description: |
   Welcome to my blog. Hope you enjoy reading!
 author:
   - name: Thinh Tran 
