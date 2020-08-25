@@ -1,9 +1,10 @@
 ---
-title: "About this blog"
+title: "About"
 description: |
-  Some additional details about the blog
+  Nothing special to say about me. 
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
+- practice, practice, practice
