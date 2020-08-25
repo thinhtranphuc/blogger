@@ -2,7 +2,7 @@
 title: "Recent Graduate Earnings"
 description: |
   TidyTuesday Data. 2018-10-16
-Thinh Tran
+author: Thinh Tran
 date: 08-25-2020
 output:
   distill::distill_article:
@@ -39,6 +39,16 @@ recent_grads %>%
 ```
 
 What major categories (eg. business, engineering, etc ) were the most common?
+
+```{r by_major_category}
+by_major_category <- recent_grads %>% 
+  group_by(major_category) %>% 
+  summarise(across(c(total, men, women), sum, na.rm = TRUE),
+            median_salary = sum(median * sample_size) / sum(sample_size)) %>% 
+  mutate(share_women = women/total) %>% 
+  arrange(desc(share_women))
+```
+
 
 ```{r}
 by_major_category %>% 
@@ -111,17 +121,6 @@ recent_grads %>%
   geom_col() + 
   coord_flip()
 ```
-
-```{r by_major_category}
-by_major_category <- recent_grads %>% 
-  group_by(major_category) %>% 
-  summarise(across(c(total, men, women), sum, na.rm = TRUE),
-            median_salary = sum(median * sample_size) / sum(sample_size)) %>% 
-  mutate(share_women = women/total) %>% 
-  arrange(desc(share_women))
-```
-
-
 
 ```{r}
 library(plotly)

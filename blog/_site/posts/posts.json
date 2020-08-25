@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "path": "posts/2020-08-25-recent-graduate-earnings/",
+    "title": "Recent Graduate Earnings",
+    "description": "TidyTuesday Data. 2018-10-16",
+    "author": [
+      {
+        "name": "Thinh Tran",
+        "url": {}
+      }
+    ],
+    "date": "2020-08-25",
+    "categories": [],
+    "preview": "posts/2020-08-25-recent-graduate-earnings/recent-graduate-earnings_files/figure-html5/unnamed-chunk-3-1.png",
+    "last_modified": "2020-08-25T23:54:12+07:00",
+    "input_file": "recent-graduate-earnings.utf8.md"
+  }
+]
