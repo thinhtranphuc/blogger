@@ -1,5 +1,5 @@
 ---
-title: "Welcome to Test"
+title: "Welcome to Whisky Page"
 description: |s
   Welcome to my blog. Hope you enjoy reading!
 author:
