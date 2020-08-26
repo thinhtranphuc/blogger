@@ -58,7 +58,7 @@ by_major_category %>%
                values_to = "value") %>% 
   ggplot(aes(major_category, value , fill = gender)) +
   geom_col() + 
-  scale_y_continuous(labels = scales::dollar_format()) +
+  scale_y_continuous(labels = scales::comma) + 
   labs(
     x = "",
     y = "Total # graduate",
