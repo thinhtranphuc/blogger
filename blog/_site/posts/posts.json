@@ -1,5 +1,21 @@
 [
   {
+    "path": "posts/2020-09-02-medium-articles/",
+    "title": "Medium Articles",
+    "description": "TidyTuesday Data. 2018-12-04",
+    "author": [
+      {
+        "name": "Thinh Tran",
+        "url": {}
+      }
+    ],
+    "date": "2020-09-02",
+    "categories": [],
+    "preview": "posts/2020-09-02-medium-articles/medium-articles_files/figure-html5/unnamed-chunk-8-1.png",
+    "last_modified": "2020-09-02T23:56:44+07:00",
+    "input_file": "medium-articles.utf8.md"
+  },
+  {
     "path": "posts/2020-08-25-recent-graduate-earnings/",
     "title": "Recent Graduate Earnings",
     "description": "TidyTuesday Data. 2018-10-16",
