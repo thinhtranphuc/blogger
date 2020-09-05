@@ -148,3 +148,9 @@ top_word_cors %>%
         subtitle = "Colour shows the geomtric mean of # claps on articles with this word in the title")
 ```
 
+### Predicting the number of claps based on title and tags 
+
+```{r}
+
+```
+

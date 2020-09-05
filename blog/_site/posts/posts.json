@@ -1,5 +1,21 @@
 [
   {
+    "path": "posts/2020-09-05-wine-rating/",
+    "title": "Wine Rating",
+    "description": "Tidy Tuesday 2019-05-26",
+    "author": [
+      {
+        "name": "Thinh Tran",
+        "url": {}
+      }
+    ],
+    "date": "2020-09-05",
+    "categories": [],
+    "preview": "posts/2020-09-05-wine-rating/wine-rating_files/figure-html5/unnamed-chunk-4-1.png",
+    "last_modified": "2020-09-05T12:16:37+07:00",
+    "input_file": "wine-rating.utf8.md"
+  },
+  {
     "path": "posts/2020-09-02-medium-articles/",
     "title": "Medium Articles",
     "description": "TidyTuesday Data. 2018-12-04",
@@ -12,7 +28,7 @@
     "date": "2020-09-02",
     "categories": [],
     "preview": "posts/2020-09-02-medium-articles/medium-articles_files/figure-html5/unnamed-chunk-8-1.png",
-    "last_modified": "2020-09-02T23:56:44+07:00",
+    "last_modified": "2020-09-05T12:20:00+07:00",
     "input_file": "medium-articles.utf8.md"
   },
   {

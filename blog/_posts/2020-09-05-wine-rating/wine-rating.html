@@ -19,366 +19,39 @@
  <!--/radix_placeholder_import_source-->
 
   <!--radix_placeholder_meta_tags-->
-  <title>Data Roasts: Whisky</title>
+  <title>Wine Rating</title>
+  
+  <meta property="description" itemprop="description" content="Tidy Tuesday 2019-05-26"/>
   
   
-  
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2020-09-05"/>
+  <meta property="article:created" itemprop="dateCreated" content="2020-09-05"/>
+  <meta name="article:author" content="Thinh Tran"/>
   
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Data Roasts: Whisky"/>
+  <meta property="og:title" content="Wine Rating"/>
   <meta property="og:type" content="article"/>
+  <meta property="og:description" content="Tidy Tuesday 2019-05-26"/>
   <meta property="og:locale" content="en_US"/>
-  <meta property="og:site_name" content="Data Roasts"/>
   
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Data Roasts: Whisky"/>
+  <meta property="twitter:title" content="Wine Rating"/>
+  <meta property="twitter:description" content="Tidy Tuesday 2019-05-26"/>
   
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","site","listing"]}},"value":[{"type":"character","attributes":{},"value":["Whisky"]},{"type":"character","attributes":{},"value":["distill::distill_website"]},{"type":"character","attributes":{},"value":["posts"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Wine Rating"]},{"type":"character","attributes":{},"value":["Tidy Tuesday 2019-05-26\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Thinh Tran"]}]}]},{"type":"character","attributes":{},"value":["09-05-2020"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
-  <!--radix_placeholder_navigation_in_header-->
   
-  <script type="application/javascript">
-  
-    window.headroom_prevent_pin = false;
-  
-    window.document.addEventListener("DOMContentLoaded", function (event) {
-  
-      // initialize headroom for banner
-      var header = $('header').get(0);
-      var headerHeight = header.offsetHeight;
-      var headroom = new Headroom(header, {
-        onPin : function() {
-          if (window.headroom_prevent_pin) {
-            window.headroom_prevent_pin = false;
-            headroom.unpin();
-          }
-        }
-      });
-      headroom.init();
-      if(window.location.hash)
-        headroom.unpin();
-      $(header).addClass('headroom--transition');
-  
-      // offset scroll location for banner on hash change
-      // (see: https://github.com/WickyNilliams/headroom.js/issues/38)
-      window.addEventListener("hashchange", function(event) {
-        window.scrollTo(0, window.pageYOffset - (headerHeight + 25));
-      });
-  
-      // responsive menu
-      $('.distill-site-header').each(function(i, val) {
-        var topnav = $(this);
-        var toggle = topnav.find('.nav-toggle');
-        toggle.on('click', function() {
-          topnav.toggleClass('responsive');
-        });
-      });
-  
-      // nav dropdowns
-      $('.nav-dropbtn').click(function(e) {
-        $(this).next('.nav-dropdown-content').toggleClass('nav-dropdown-active');
-        $(this).parent().siblings('.nav-dropdown')
-           .children('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $("body").click(function(e){
-        $('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $(".nav-dropdown").click(function(e){
-        e.stopPropagation();
-      });
-    });
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["wine-rating_files/bowser-1.9.3/bowser.min.js","wine-rating_files/distill-2.2.21/template.v2.js","wine-rating_files/figure-html5/unnamed-chunk-10-1.png","wine-rating_files/figure-html5/unnamed-chunk-11-1.png","wine-rating_files/figure-html5/unnamed-chunk-12-1.png","wine-rating_files/figure-html5/unnamed-chunk-14-1.png","wine-rating_files/figure-html5/unnamed-chunk-16-1.png","wine-rating_files/figure-html5/unnamed-chunk-16-2.png","wine-rating_files/figure-html5/unnamed-chunk-17-1.png","wine-rating_files/figure-html5/unnamed-chunk-18-1.png","wine-rating_files/figure-html5/unnamed-chunk-19-1.png","wine-rating_files/figure-html5/unnamed-chunk-4-1.png","wine-rating_files/figure-html5/unnamed-chunk-4-2.png","wine-rating_files/figure-html5/unnamed-chunk-4-3.png","wine-rating_files/figure-html5/unnamed-chunk-5-1.png","wine-rating_files/figure-html5/unnamed-chunk-6-1.png","wine-rating_files/figure-html5/unnamed-chunk-8-1.png","wine-rating_files/jquery-1.11.3/jquery.min.js","wine-rating_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
-  
-  <style type="text/css">
-  
-  /* Theme (user-documented overrideables for nav appearance) */
-  
-  .distill-site-nav {
-    color: rgba(255, 255, 255, 0.8);
-    background-color: #455a64;
-    font-size: 15px;
-    font-weight: 300;
-  }
-  
-  .distill-site-nav a {
-    color: inherit;
-    text-decoration: none;
-  }
-  
-  .distill-site-nav a:hover {
-    color: white;
-  }
-  
-  @media print {
-    .distill-site-nav {
-      display: none;
-    }
-  }
-  
-  .distill-site-header {
-  
-  }
-  
-  .distill-site-footer {
-  
-  }
-  
-  
-  /* Site Header */
-  
-  .distill-site-header {
-    width: 100%;
-    box-sizing: border-box;
-    z-index: 3;
-  }
-  
-  .distill-site-header .nav-left {
-    display: inline-block;
-    margin-left: 8px;
-  }
-  
-  @media screen and (max-width: 768px) {
-    .distill-site-header .nav-left {
-      margin-left: 0;
-    }
-  }
-  
-  
-  .distill-site-header .nav-right {
-    float: right;
-    margin-right: 8px;
-  }
-  
-  .distill-site-header a,
-  .distill-site-header .title {
-    display: inline-block;
-    text-align: center;
-    padding: 14px 10px 14px 10px;
-  }
-  
-  .distill-site-header .title {
-    font-size: 18px;
-  }
-  
-  .distill-site-header .logo {
-    padding: 0;
-  }
-  
-  .distill-site-header .logo img {
-    display: none;
-    max-height: 20px;
-    width: auto;
-    margin-bottom: -4px;
-  }
-  
-  .distill-site-header .nav-image img {
-    max-height: 18px;
-    width: auto;
-    display: inline-block;
-    margin-bottom: -3px;
-  }
-  
-  
-  
-  @media screen and (min-width: 1000px) {
-    .distill-site-header .logo img {
-      display: inline-block;
-    }
-    .distill-site-header .nav-left {
-      margin-left: 20px;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 20px;
-    }
-    .distill-site-header .title {
-      padding-left: 12px;
-    }
-  }
-  
-  
-  .distill-site-header .nav-toggle {
-    display: none;
-  }
-  
-  .nav-dropdown {
-    display: inline-block;
-    position: relative;
-  }
-  
-  .nav-dropdown .nav-dropbtn {
-    border: none;
-    outline: none;
-    color: rgba(255, 255, 255, 0.8);
-    padding: 16px 10px;
-    background-color: transparent;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    margin: 0;
-    margin-top: 1px;
-    z-index: 2;
-  }
-  
-  .nav-dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: white;
-    min-width: 200px;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 4px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
-    z-index: 1;
-    margin-top: 2px;
-    white-space: nowrap;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-  
-  .nav-dropdown-content hr {
-    margin-top: 4px;
-    margin-bottom: 4px;
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
-  
-  .nav-dropdown-active {
-    display: block;
-  }
-  
-  .nav-dropdown-content a, .nav-dropdown-content .nav-dropdown-header {
-    color: black;
-    padding: 6px 24px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-  }
-  
-  .nav-dropdown-content .nav-dropdown-header {
-    display: block;
-    padding: 5px 24px;
-    padding-bottom: 0;
-    text-transform: uppercase;
-    font-size: 14px;
-    color: #999999;
-    white-space: nowrap;
-  }
-  
-  .nav-dropdown:hover .nav-dropbtn {
-    color: white;
-  }
-  
-  .nav-dropdown-content a:hover {
-    background-color: #ddd;
-    color: black;
-  }
-  
-  .nav-right .nav-dropdown-content {
-    margin-left: -45%;
-    right: 0;
-  }
-  
-  @media screen and (max-width: 768px) {
-    .distill-site-header a, .distill-site-header .nav-dropdown  {display: none;}
-    .distill-site-header a.nav-toggle {
-      float: right;
-      display: block;
-    }
-    .distill-site-header .title {
-      margin-left: 0;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 0;
-    }
-    .distill-site-header {
-      overflow: hidden;
-    }
-    .nav-right .nav-dropdown-content {
-      margin-left: 0;
-    }
-  }
-  
-  
-  @media screen and (max-width: 768px) {
-    .distill-site-header.responsive {position: relative;}
-    .distill-site-header.responsive a.nav-toggle {
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
-    .distill-site-header.responsive a,
-    .distill-site-header.responsive .nav-dropdown {
-      display: block;
-      text-align: left;
-    }
-    .distill-site-header.responsive .nav-left,
-    .distill-site-header.responsive .nav-right {
-      width: 100%;
-    }
-    .distill-site-header.responsive .nav-dropdown {float: none;}
-    .distill-site-header.responsive .nav-dropdown-content {position: relative;}
-    .distill-site-header.responsive .nav-dropdown .nav-dropbtn {
-      display: block;
-      width: 100%;
-      text-align: left;
-    }
-  }
-  
-  /* Site Footer */
-  
-  .distill-site-footer {
-    width: 100%;
-    overflow: hidden;
-    box-sizing: border-box;
-    z-index: 3;
-    margin-top: 30px;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    text-align: center;
-  }
-  
-  /* Headroom */
-  
-  d-title {
-    padding-top: 6rem;
-  }
-  
-  @media print {
-    d-title {
-      padding-top: 4rem;
-    }
-  }
-  
-  .headroom {
-    z-index: 1000;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-  }
-  
-  .headroom--transition {
-    transition: all .4s ease-in-out;
-  }
-  
-  .headroom--unpinned {
-    top: -100px;
-  }
-  
-  .headroom--pinned {
-    top: 0;
-  }
-  
-  </style>
-  
-  <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
-  <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
-  <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
+  <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
   <!--radix_placeholder_distill-->
   
@@ -1264,415 +937,495 @@
   </script>
   
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-  <script src="site_libs/bowser-1.9.3/bowser.min.js"></script>
-  <script src="site_libs/webcomponents-2.0.0/webcomponents.js"></script>
-  <script src="site_libs/distill-2.2.21/template.v2.js"></script>
+  <script src="wine-rating_files/jquery-1.11.3/jquery.min.js"></script>
+  <script src="wine-rating_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="wine-rating_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="wine-rating_files/distill-2.2.21/template.v2.js"></script>
   <!--radix_placeholder_site_in_header-->
   <!--/radix_placeholder_site_in_header-->
 
 
 </head>
 
-<body class="layout-listing">
+<body>
 
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Whisky","authors":[]}
+{"title":"Wine Rating","description":"Tidy Tuesday 2019-05-26","authors":[{"author":"Thinh Tran","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#"}],"publishedDate":"2020-09-05T00:00:00.000+07:00","citationText":"Tran, 2020"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
 <!--radix_placeholder_navigation_before_body-->
-<header class="header header--fixed" role="banner">
-<nav class="distill-site-nav distill-site-header">
-<div class="nav-left">
-<a href="index.html" class="title">Data Roasts</a>
-</div>
-<div class="nav-right">
-<a href="index.html">Home</a>
-<a href="about.html">About</a>
-<a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
-</div>
-</nav>
-</header>
 <!--/radix_placeholder_navigation_before_body-->
 <!--radix_placeholder_site_before_body-->
 <!--/radix_placeholder_site_before_body-->
-<!--radix_placeholder_article_listing-->
-
-<style type="text/css">
-
-/* Styles for listing layout (hide title) */
-.layout-listing d-title, .layout-listing .d-title {
-  display: none;
-}
-
-/* Styles for posts lists (not auto-injected) */
-
-
-.posts-with-sidebar {
-  padding-left: 45px;
-  padding-right: 45px;
-}
-
-.posts-list .description h2,
-.posts-list .description p {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
-}
-
-.posts-list .description h2 {
-  font-weight: 700;
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.posts-list h2.post-tag {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  padding-bottom: 12px;
-}
-.posts-list {
-  margin-top: 60px;
-  margin-bottom: 24px;
-}
-
-.posts-list .post-preview {
-  text-decoration: none;
-  overflow: hidden;
-  display: block;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 24px 0;
-}
-
-.post-preview-last {
-  border-bottom: none !important;
-}
-
-.posts-list .posts-list-caption {
-  grid-column: screen;
-  font-weight: 400;
-}
-
-.posts-list .post-preview h2 {
-  margin: 0 0 6px 0;
-  line-height: 1.2em;
-  font-style: normal;
-  font-size: 24px;
-}
-
-.posts-list .post-preview p {
-  margin: 0 0 12px 0;
-  line-height: 1.4em;
-  font-size: 16px;
-}
-
-.posts-list .post-preview .thumbnail {
-  box-sizing: border-box;
-  margin-bottom: 24px;
-  position: relative;
-  max-width: 500px;
-}
-.posts-list .post-preview img {
-  width: 100%;
-  display: block;
-}
-
-.posts-list .metadata {
-  font-size: 12px;
-  line-height: 1.4em;
-  margin-bottom: 18px;
-}
-
-.posts-list .metadata > * {
-  display: inline-block;
-}
-
-.posts-list .metadata .publishedDate {
-  margin-right: 1em;
-}
-
-.posts-list .metadata .tags {
-  margin-top: 1em;
-}
-
-.posts-list .tags .tag {
-  color: rgba(0,0,0,0.67);
-  padding: 0.3em 0.5em;
-  margin: 0;
-  font-size: 80%;
-  border: 1px solid rgba(0,0,0,0.4);
-  border-radius: 3px;
-  text-transform: uppercase;
-  font-weight: 500;
-}
-
-.posts-list img {
-  opacity: 1;
-}
-
-.posts-list img[data-src] {
-  opacity: 0;
-}
-
-.posts-more {
-  clear: both;
-}
-
-
-.posts-sidebar {
-  font-size: 16px;
-}
-
-.posts-sidebar h3 {
-  font-size: 16px;
-  margin-top: 0;
-  margin-bottom: 0.5em;
-  font-weight: 400;
-  text-transform: uppercase;
-}
-
-.sidebar-section {
-  margin-bottom: 30px;
-}
-
-.categories ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-.categories li {
-  color: rgba(0, 0, 0, 0.8);
-  margin-bottom: 0;
-}
-
-.categories li>a {
-  border-bottom: none;
-}
-
-.categories li>a:hover {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
-}
-
-.categories .active {
-  font-weight: 600;
-}
-
-.categories .category-count {
-  color: rgba(0, 0, 0, 0.4);
-}
-
-
-@media(min-width: 768px) {
-  .posts-list .post-preview h2 {
-    font-size: 26px;
-  }
-  .posts-list .post-preview .thumbnail {
-    float: right;
-    width: 35%;
-    margin-bottom: 0;
-  }
-  .posts-list .post-preview .description {
-    float: left;
-    width: 45%;
-  }
-  .posts-list .post-preview .metadata {
-    float: left;
-    width: 15%;
-    margin-top: 8px;
-  }
-  .posts-list .post-preview p {
-    margin: 0 0 12px 0;
-    line-height: 1.5em;
-    font-size: 16px;
-  }
-  .posts-with-sidebar .posts-list {
-    float: left;
-    width: 72%;
-  }
-  .posts-with-sidebar .posts-sidebar {
-    float: right;
-    width: 20%;
-    margin-top: 60px;
-    padding-top: 24px;
-    padding-bottom: 24px;
-  }
-}
-
-.downlevel .posts-list .post-preview {
-  color: inherit;
-}
-
-</style>
-
-<script type="application/javascript">
-
-function init_posts_list() {
-
-  function load_image(img) {
-    var src = $(img).attr('data-src');
-    if (src) {
-      $(img).attr('src', src);
-      $(img).load(function() {
-        img.removeAttribute('data-src');
-      });
-    }
-  }
-
-  function set_posts_visible(posts, visible) {
-    if (visible) {
-
-      // show bottom border by default
-      $(posts).removeClass('post-preview-last');
-
-      // apply limits if need be
-      var max_posts = 25;
-      var apply_limits = $('.posts-container').hasClass('posts-apply-limit');
-      if (apply_limits && posts.length > max_posts) {
-        posts = $(posts).slice(0, max_posts);
-      } else {
-        $('.posts-more a').addClass('hidden');
-      }
-
-      // apply last style
-      $(posts.slice(-1)[0]).addClass('post-preview-last');
-
-      $(posts).removeClass('hidden');
-      $(posts).find('img[data-src]').each(function(i, img) {
-        load_image(img);
-      });
-    } else {
-      $(posts).addClass('hidden');
-    }
-  }
-
-  function apply_hash_filter() {
-
-    // clear active state
-    $('.categories .active').removeClass('active');
-
-    // mark all posts invisible to start
-    set_posts_visible($('.posts-list').children('a'), false);
-
-    // if we have a hash filter
-    if (window.location.hash) {
-
-      // mark posts that match the category visible
-      var page_category = window.location.hash.replace("#", "");
-      var posts = $('.post-metadata').map(function(idx, script) {
-        var metadata = $.parseJSON($(script).html());
-        var post = null;
-        $.each(metadata.categories, function(idx, category) {
-          category = category.replace(/ /g,"_");
-          if (category == page_category) {
-            post = $(script).parent().get();
-            return false;
-          }
-        });
-        return post;
-      });
-      set_posts_visible(posts, true);
-
-      // mark the hash active
-      $('.categories li>a[href="' + window.location.hash + '"]').addClass('active');
-
-    } else {
-
-      // no hash filter, make all posts visible (subject to max display)
-      set_posts_visible($('.posts-list').children(), true);
-
-    }
-  }
-
-  // more articles
-  function apply_post_limits(apply) {
-    if (apply) {
-      $('.posts-container').addClass('posts-apply-limit');
-      $('.posts-more a').removeClass('hidden');
-    } else {
-      $('.posts-container').removeClass('posts-apply-limit');
-      $('.posts-more a').addClass('hidden');
-    }
-  }
-
-  // hash filter handling
-  apply_hash_filter();
-  $(window).on('hashchange',function() {
-    apply_post_limits(true);
-    apply_hash_filter();
-  });
-
-  // more articles link
-  $('.posts-more a').click(function(e) {
-    e.preventDefault();
-    apply_post_limits(false);
-    apply_hash_filter();
-    return false;
-  });
-
-}
-
-</script>
-
-
-
-<div class="posts-container posts-apply-limit l-page">
-<div class="posts-list">
-<h1 class="posts-list-caption">Whisky</h1>
-<a href="posts/2020-09-05-wine-rating/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Sept. 5, 2020</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2020-09-05-wine-rating/wine-rating_files/figure-html5/unnamed-chunk-4-1.png"/>
-</div>
-<div class="description">
-<h2>Wine Rating</h2>
-<p>Tidy Tuesday 2019-05-26</p>
-</div>
-</a>
-<a href="posts/2020-09-02-medium-articles/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Sept. 1, 2020</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2020-09-02-medium-articles/medium-articles_files/figure-html5/unnamed-chunk-8-1.png"/>
-</div>
-<div class="description">
-<h2>Medium Articles</h2>
-<p>TidyTuesday Data. 2018-12-04</p>
-</div>
-</a>
-<a href="posts/2020-08-25-recent-graduate-earnings/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Aug. 25, 2020</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2020-08-25-recent-graduate-earnings/distill-preview.png"/>
-</div>
-<div class="description">
-<h2>Recent Graduate Earnings</h2>
-<p>TidyTuesday Data. 2018-10-16</p>
-</div>
-</a>
-</div>
-<div class="posts-more">
-<a href="#">More articles &raquo;</a>
-</div>
-</div>
-<!--/radix_placeholder_article_listing-->
 
 <div class="d-title">
-<h1>Whisky</h1>
-
+<h1>Wine Rating</h1>
+<p><p>Tidy Tuesday 2019-05-26</p></p>
 </div>
 
+<div class="d-byline">
+  
+  Thinh Tran
+  
+<br/>09-05-2020
+</div>
 
 <div class="d-article">
+<h1 id="loading-the-packages">Loading the packages</h1>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+library(tidyverse)
+theme_set(theme_light())</code></pre>
+</div>
+<h1 id="loading-the-data">Loading the data</h1>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+tt &lt;- tidytuesdayR::tt_load(&quot;2019-05-28&quot;)</code></pre>
+<pre><code>
+    Downloading file 1 of 1: `winemag-data-130k-v2.csv`</code></pre>
+<pre class="r"><code>
+wine_rating &lt;- tt$`winemag-data-130k-v2` %&gt;% 
+  select(-X1)</code></pre>
+</div>
+<h1 id="cleaning-data-eda">Cleaning Data &amp; EDA</h1>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+wine_rating &lt;- wine_rating %&gt;% 
+  mutate(year = as.integer(str_extract(title, &quot;20\\d\\d&quot;)),
+         year = ifelse(year &lt; 2000, NA, year)) %&gt;% 
+  filter(!is.na(price))</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+wine_rating %&gt;% 
+  count(country, sort = TRUE)</code></pre>
+<pre><code>
+# A tibble: 43 x 2
+   country       n
+   &lt;chr&gt;     &lt;int&gt;
+ 1 US        54265
+ 2 France    17776
+ 3 Italy     16914
+ 4 Spain      6573
+ 5 Portugal   4875
+ 6 Chile      4416
+ 7 Argentina  3756
+ 8 Austria    2799
+ 9 Australia  2294
+10 Germany    2120
+# … with 33 more rows</code></pre>
+<pre class="r"><code>
+wine_rating %&gt;% 
+  count(designation, sort = TRUE)</code></pre>
+<pre><code>
+# A tibble: 35,777 x 2
+   designation        n
+   &lt;chr&gt;          &lt;int&gt;
+ 1 &lt;NA&gt;           34779
+ 2 Reserve         1980
+ 3 Estate          1318
+ 4 Reserva         1219
+ 5 Estate Grown     618
+ 6 Riserva          607
+ 7 Brut             472
+ 8 Dry              406
+ 9 Estate Bottled   342
+10 Crianza          338
+# … with 35,767 more rows</code></pre>
+<pre class="r"><code>
+wine_rating %&gt;% 
+  count(country, region_1, sort = TRUE)</code></pre>
+<pre><code>
+# A tibble: 1,247 x 3
+   country   region_1                 n
+   &lt;chr&gt;     &lt;chr&gt;                &lt;int&gt;
+ 1 Portugal  &lt;NA&gt;                  4875
+ 2 US        Napa Valley           4475
+ 3 Chile     &lt;NA&gt;                  4416
+ 4 US        Columbia Valley (WA)  4109
+ 5 US        Russian River Valley  3090
+ 6 Austria   &lt;NA&gt;                  2799
+ 7 US        California            2627
+ 8 US        Paso Robles           2327
+ 9 US        Willamette Valley     2296
+10 Argentina Mendoza               2275
+# … with 1,237 more rows</code></pre>
+<pre class="r"><code>
+wine_rating %&gt;% 
+  ggplot(aes(year)) +
+  geom_histogram()</code></pre>
+<p><img src="wine-rating_files/figure-html5/unnamed-chunk-4-1.png" width="624" /></p>
+<pre class="r"><code>
+wine_rating %&gt;% 
+  ggplot(aes(points)) + 
+  geom_histogram(binwidth = 1)</code></pre>
+<p><img src="wine-rating_files/figure-html5/unnamed-chunk-4-2.png" width="624" /></p>
+<pre class="r"><code>
+wine_rating %&gt;% 
+  ggplot(aes(price)) + 
+  geom_histogram() + 
+  scale_x_log10()</code></pre>
+<p><img src="wine-rating_files/figure-html5/unnamed-chunk-4-3.png" width="624" /></p>
+</div>
+<p>The distribution of points and price looks like a normal distribution. Let’s try to predict with linear regression.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+wine_rating %&gt;% ggplot(aes(price, points)) + 
+  geom_point() + 
+  geom_smooth(method = &quot;lm&quot;) + 
+  scale_x_log10()</code></pre>
+<p><img src="wine-rating_files/figure-html5/unnamed-chunk-5-1.png" width="624" /></p>
+<pre class="r"><code>
+summary(lm(points ~ log2(price), data = wine_rating))</code></pre>
+<pre><code>
+Call:
+lm(formula = points ~ log2(price), data = wine_rating)
 
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-14.0559  -1.5136   0.1294   1.7133   9.2408 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 78.981419   0.035765    2208   &lt;2e-16 ***
+log2(price)  1.974162   0.007338     269   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 2.408 on 120973 degrees of freedom
+Multiple R-squared:  0.3744,    Adjusted R-squared:  0.3744 
+F-statistic: 7.239e+04 on 1 and 120973 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<p>The coefficient is significant. Every time the price double, the expected points goes up by 2.</p>
+<h1 id="what-features-we-can-add-in-the-model">What features we can add in the model?</h1>
+<h2 id="country">Country</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+wine_rating %&gt;% 
+  mutate(country = fct_relevel(fct_lump_n(country, 7), &quot;US&quot;)) %&gt;% 
+  mutate(country = fct_reorder(country, points)) %&gt;% 
+  ggplot(aes(country, points)) + 
+  geom_boxplot() + 
+  coord_flip()</code></pre>
+<p><img src="wine-rating_files/figure-html5/unnamed-chunk-6-1.png" width="624" /></p>
+</div>
+<p>The boxplot suggest that the points varies among countries. Try fitting in the model</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+wine_rating %&gt;% 
+  mutate(country = fct_relevel(fct_lump_n(country, 7), &quot;US&quot;)) %&gt;% 
+  lm(points ~ log2(price) + country, data= .) %&gt;% 
+  summary()</code></pre>
+<pre><code>
+Call:
+lm(formula = points ~ log2(price) + country, data = .)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-14.4034  -1.5062   0.1036   1.6716   9.4027 
+
+Coefficients:
+                  Estimate Std. Error  t value Pr(&gt;|t|)    
+(Intercept)      78.732031   0.038508 2044.578  &lt; 2e-16 ***
+log2(price)       1.990186   0.007514  264.847  &lt; 2e-16 ***
+countryArgentina -0.519181   0.040406  -12.849  &lt; 2e-16 ***
+countryChile     -0.340855   0.037752   -9.029  &lt; 2e-16 ***
+countryFrance     0.409573   0.020554   19.926  &lt; 2e-16 ***
+countryItaly      0.049183   0.020925    2.350   0.0188 *  
+countryPortugal   1.122601   0.035903   31.268  &lt; 2e-16 ***
+countrySpain     -0.179093   0.031307   -5.721 1.06e-08 ***
+countryOther      0.963131   0.023808   40.453  &lt; 2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 2.376 on 120907 degrees of freedom
+  (59 observations deleted due to missingness)
+Multiple R-squared:  0.3911,    Adjusted R-squared:  0.3911 
+F-statistic:  9707 on 8 and 120907 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<p>Slightly reduce RSE</p>
+<h2 id="year">Year</h2>
+Should we use year as a features in the model?
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+wine_rating %&gt;% 
+  ggplot(aes(year, points, group = year)) +
+  geom_boxplot()</code></pre>
+<p><img src="wine-rating_files/figure-html5/unnamed-chunk-8-1.png" width="624" /></p>
+<pre class="r"><code>
+wine_rating %&gt;%
+  count(year)</code></pre>
+<pre><code>
+# A tibble: 19 x 2
+    year     n
+   &lt;int&gt; &lt;int&gt;
+ 1  2000   735
+ 2  2001   668
+ 3  2002   333
+ 4  2003   499
+ 5  2004  1604
+ 6  2005  3293
+ 7  2006  5170
+ 8  2007  6498
+ 9  2008  6725
+10  2009  9056
+11  2010 11105
+12  2011 11437
+13  2012 14742
+14  2013 15196
+15  2014 14892
+16  2015  9642
+17  2016  3549
+18  2017    11
+19    NA  5820</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+wine_rating %&gt;% 
+  mutate(country = fct_relevel(fct_lump_n(country, 7), &quot;US&quot;)) %&gt;% 
+  lm(points ~ log2(price) + country + year , data= .) %&gt;% 
+  summary()</code></pre>
+<pre><code>
+Call:
+lm(formula = points ~ log2(price) + country + year, data = .)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-14.9967  -1.4889   0.1103   1.6380   9.4787 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)      -1.714e+02  4.384e+00 -39.104  &lt; 2e-16 ***
+log2(price)       2.043e+00  7.694e-03 265.509  &lt; 2e-16 ***
+countryArgentina -4.445e-01  4.008e-02 -11.090  &lt; 2e-16 ***
+countryChile     -2.289e-01  3.777e-02  -6.061 1.36e-09 ***
+countryFrance     3.779e-01  2.117e-02  17.848  &lt; 2e-16 ***
+countryItaly      1.754e-01  2.126e-02   8.251  &lt; 2e-16 ***
+countryPortugal   1.095e+00  3.650e-02  29.989  &lt; 2e-16 ***
+countrySpain     -8.433e-02  3.219e-02  -2.619  0.00881 ** 
+countryOther      1.005e+00  2.381e-02  42.196  &lt; 2e-16 ***
+year              1.243e-01  2.178e-03  57.062  &lt; 2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 2.339 on 115086 degrees of freedom
+  (5879 observations deleted due to missingness)
+Multiple R-squared:  0.4066,    Adjusted R-squared:  0.4065 
+F-statistic:  8761 on 9 and 115086 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<p>The p-value is significant.</p>
+<h2 id="taster">Taster</h2>
+<p>How about taster?</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+wine_rating %&gt;% 
+  mutate(taster_name = fct_relevel(fct_lump_n(taster_name, 6), &quot;Missing&quot;)) %&gt;% 
+  mutate(taster_name = fct_reorder(taster_name, points)) %&gt;% 
+  ggplot(aes(taster_name, points)) + 
+  geom_boxplot() + 
+  coord_flip()</code></pre>
+<p><img src="wine-rating_files/figure-html5/unnamed-chunk-10-1.png" width="624" /></p>
+</div>
+<h2 id="model">Model</h2>
+Let’s finalise the model
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+library(broom)
+model &lt;- wine_rating %&gt;% 
+  replace_na(list(taster_name = &quot;Missing&quot;)) %&gt;% 
+  mutate(country = fct_relevel(fct_lump_n(country, 7), &quot;US&quot;),
+         taster_name = fct_relevel(fct_lump_n(taster_name, 6), &quot;Missing&quot;)) %&gt;% 
+  lm(points ~ log2(price) + country + year + taster_name , data= .) 
+
+# coefficient plots 
+model %&gt;% 
+  tidy(conf.int = TRUE) %&gt;% 
+  filter(term != &quot;(Intercept)&quot;) %&gt;%
+  mutate(term = str_replace(term, &quot;country&quot;, &quot;Country: &quot;),
+         term = str_replace(term, &quot;taster_name&quot;, &quot;Taster: &quot;),
+         term = fct_reorder(term, estimate)) %&gt;% 
+  ggplot(aes(estimate, term, colour = term)) +
+  geom_point() + 
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high)) +
+  labs(
+    title = &quot;Coefficient plots&quot;,
+    x = &quot;Estimate&quot;,
+    y = &quot;&quot;
+  )</code></pre>
+<p><img src="wine-rating_files/figure-html5/unnamed-chunk-11-1.png" width="624" /></p>
+</div>
+<p>Coefficient plot suggest all terms are significant</p>
+<h2 id="evaluation-model">Evaluation model</h2>
+<p>Have a look on how the fitted point versus the actual points</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+augment(model) %&gt;% 
+  ggplot(aes(.fitted, points)) +
+  geom_point(alpha = .1)</code></pre>
+<p><img src="wine-rating_files/figure-html5/unnamed-chunk-12-1.png" width="624" /></p>
+<pre class="r"><code>
+tidy(anova(model)) %&gt;% 
+  mutate(sumsq/sum(sumsq))</code></pre>
+<pre><code>
+# A tibble: 5 x 7
+  term          df   sumsq  meansq statistic p.value `sumsq/sum(sumsq…
+  &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;             &lt;dbl&gt;
+1 log2(pri…      1 394060.  3.94e5    74145.       0            0.371 
+2 country        7  19505.  2.79e3      524.       0            0.0184
+3 year           1  17814.  1.78e4     3352.       0            0.0168
+4 taster_n…      6  18007.  3.00e3      565.       0            0.0170
+5 Residuals 115080 611618.  5.31e0       NA       NA            0.576 </code></pre>
+</div>
+<p>Only a small amount of variance explained by country, year, taster_name</p>
+<h1 id="lasso-regression-on-words-in-description">Lasso regression on words in description</h1>
+Firstly, split words in the description and filter out irrelevant words for the model
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+library(tidytext)
+
+wine_rating_words &lt;- wine_rating %&gt;% 
+  mutate(wine_id = row_number()) %&gt;% 
+  unnest_tokens(word, description) %&gt;% 
+  anti_join(stop_words, by = &quot;word&quot;) %&gt;% 
+  filter(!word %in% c(&quot;wine&quot;, &quot;drink&quot;),
+         str_detect(word, &#39;[a-z]&#39;))</code></pre>
+</div>
+<h2 id="eda">EDA</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+wine_rating_words %&gt;% 
+  count(word, sort = TRUE) %&gt;% 
+  head(20) %&gt;% 
+  mutate(word = fct_reorder(word, n)) %&gt;% 
+  ggplot(aes(word, n)) + 
+  geom_col() + 
+  labs(
+    title = &quot;Most common words in the description&quot;,
+    x = &quot;&quot;,
+    y = &quot;Occurences&quot;
+  ) +
+  coord_flip()</code></pre>
+<p><img src="wine-rating_files/figure-html5/unnamed-chunk-14-1.png" width="624" /></p>
+</div>
+<h2 id="how-correlated-between-words">How correlated between words</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+library(widyr)
+
+wine_words_filtered &lt;- wine_rating_words %&gt;% 
+  distinct(wine_id, word) %&gt;% 
+  add_count(word) %&gt;% 
+  filter(n &gt;= 100) 
+
+wine_words_filtered %&gt;% 
+  pairwise_cor(word , wine_id, sort = TRUE)</code></pre>
+<pre><code>
+# A tibble: 5,501,370 x 3
+   item1    item2    correlation
+   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+ 1 verde    vinho          0.985
+ 2 vinho    verde          0.985
+ 3 verdot   petit          0.969
+ 4 petit    verdot         0.969
+ 5 nacional touriga        0.956
+ 6 touriga  nacional       0.956
+ 7 sirah    petite         0.956
+ 8 petite   sirah          0.956
+ 9 smith    granny         0.921
+10 granny   smith          0.921
+# … with 5,501,360 more rows</code></pre>
+</div>
+<h2 id="lasso-model">Lasso model</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+library(Matrix)
+
+wine_word_matrix &lt;- wine_words_filtered %&gt;% 
+  cast_sparse(wine_id, word)
+
+wine_ids &lt;- as.integer(rownames(wine_word_matrix))
+scores &lt;- wine_rating$points[wine_ids]
+
+library(glmnet)
+wine_word_matrix_extra &lt;- cbind(wine_word_matrix, log_price = log2(wine_rating$price[wine_ids]))
+
+glmnet_model &lt;- glmnet(wine_word_matrix_extra, scores)
+
+glmnet_model %&gt;% 
+  tidy() %&gt;% 
+  filter(term %in% c(&quot;rich&quot;, &quot;black&quot;, &quot;simple&quot;, &quot;complex&quot;, &quot;vineyard&quot;)) %&gt;% 
+  ggplot(aes(lambda, estimate, colour = term)) +
+  geom_line() + 
+  scale_x_log10() + 
+  geom_hline(lty = 2, yintercept = 0)</code></pre>
+<p><img src="wine-rating_files/figure-html5/unnamed-chunk-16-1.png" width="624" /></p>
+<pre class="r"><code>
+glmnet_model %&gt;% 
+  tidy() %&gt;% 
+  count(lambda) %&gt;% 
+  ggplot(aes(lambda, n)) + 
+  geom_line() + 
+  scale_x_log10()</code></pre>
+<p><img src="wine-rating_files/figure-html5/unnamed-chunk-16-2.png" width="624" /></p>
+</div>
+<h2 id="cross-validation-with-lasso">Cross Validation with lasso</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+library(doMC)
+registerDoMC(cores = 4)
+cv_glmnet_model &lt;- cv.glmnet(wine_word_matrix_extra, scores, parallel = TRUE)
+
+ plot(cv_glmnet_model)</code></pre>
+<p><img src="wine-rating_files/figure-html5/unnamed-chunk-17-1.png" width="624" /></p>
+</div>
+<h2 id="lexicon">Lexicon</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+lexicon &lt;- cv_glmnet_model$glmnet.fit %&gt;% 
+  tidy() %&gt;% 
+  filter(lambda == cv_glmnet_model$lambda.1se,
+         term != &quot;(Intercept)&quot;) %&gt;% 
+  select(word = term, coefficient = estimate)
+
+lexicon %&gt;% 
+  arrange(coefficient) %&gt;% 
+  group_by(direction = ifelse(coefficient &lt; 0, &quot;Negative&quot;, &quot;Positive&quot;)) %&gt;% 
+  top_n(10, abs(coefficient)) %&gt;% 
+  mutate(word = fct_reorder(word, coefficient)) %&gt;% 
+  ggplot(aes(word, coefficient, fill = direction)) +
+  geom_col() + 
+  coord_flip() +
+  labs(y = &quot;Estimate the effect of the word on the wine points&quot;,
+       title = &quot;What words are predictive of a wine&#39;s score?&quot;)</code></pre>
+<p><img src="wine-rating_files/figure-html5/unnamed-chunk-18-1.png" width="624" /></p>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+wine_rating_words %&gt;% 
+  filter(wine_id %in% sample(unique(wine_id), 6)) %&gt;% 
+  select(title, word, points) %&gt;% 
+  mutate(wine = str_c(str_trunc(title , 40), &quot;(&quot;, points, &quot;)&quot;)) %&gt;% 
+  inner_join(lexicon, by = &quot;word&quot;) %&gt;% 
+  group_by(title, word) %&gt;% 
+  summarise(coefficient = mean(coefficient)) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(direction = ifelse(coefficient &lt; 0, &quot;Negative&quot;, &quot;Positive&quot;),
+    word = fct_reorder(word, coefficient)) %&gt;% 
+  ggplot(aes(word, coefficient, fill = direction)) + 
+  geom_col(show.legend = FALSE) + 
+  coord_flip() + 
+  facet_wrap(~ title, scales = &quot;free_y&quot;) + 
+  labs(
+    title = &quot;How a lasso regression woud predict each wine&#39;s scores&quot;,
+    subtitle = &quot;Using a lasso regression with an extra term for price&quot;,
+    x = &quot;&quot;,
+    y = &quot;Effect on scores&quot;
+  )</code></pre>
+<p><img src="wine-rating_files/figure-html5/unnamed-chunk-19-1.png" width="624" /></p>
+</div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
