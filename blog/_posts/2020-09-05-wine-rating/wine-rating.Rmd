@@ -1,5 +1,5 @@
 ---
-title: "Medium Articles"
+title: "Wine Ratings"
 description: |
   TidyTuesday Data. 2019-05-16
 author: "Thinh Tran"
