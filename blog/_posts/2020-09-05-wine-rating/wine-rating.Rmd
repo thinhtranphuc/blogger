@@ -1,14 +1,13 @@
 ---
-title: "Wine Rating"
+title: "Medium Articles"
 description: |
-  Tidy Tuesday 2019-05-26
-author: Thinh Tran
+  TidyTuesday Data. 2019-05-16
+author: "Thinh Tran"
 date: 09-05-2020
 output:
   distill::distill_article:
     self_contained: false
 ---
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -174,6 +173,8 @@ Only a small amount of variance explained by country, year, taster_name
 # Lasso regression on words in description 
 
 Firstly, split words in the description and filter out irrelevant words for the model 
+
+
 ```{r}
 library(tidytext)
 
