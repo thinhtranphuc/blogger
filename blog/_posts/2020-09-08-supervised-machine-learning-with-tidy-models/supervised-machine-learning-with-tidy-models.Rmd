@@ -1,0 +1,165 @@
+---
+title: "Supervised Machine Learning with Tidy Models"
+description: |
+  A short description of the post.
+author: "Thinh Tran"
+date: 09-08-2020
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Acknowledgment 
+Practice and Self-studying from the source of [Julia Sielge][https://supervised-ml-course.netlify.app]
+# Loading packages 
+```{r}
+library(tidyverse)
+themeset(theme_light())
+```
+
+# Chapter 1: Mtcars
+```{r}
+cars2018 <- read_csv("https://raw.githubusercontent.com/juliasilge/supervised-ML-case-studies-course/master/data/cars2018.csv")
+```
+
+The first step before modelling is to explore the data
+
+## Exploratotry Data Analysis 
+Quickly get the feels of how our data is 
+
+```{r}
+cars2018 %>% glimpse()
+```
+
+Let's ask some questions
+
+### What is the distribution of `mpg`
+
+```{r}
+cars2018 %>% 
+  ggplot(aes(mpg)) + 
+  geom_histogram(bins=25) +
+  scale_x_log10() + 
+  labs(
+    x = "Fuel efficiency(mpg)",
+    y = "Number of cars"
+  )
+```
+
+### Car models
+```{r}
+cars2018 %>%
+  count(model, model_index, sort = TRUE)
+
+cars2018 %>%
+  count(aspiration, sort = TRUE)
+
+cars2018 %>% 
+  count(fuel_injection, sort = TRUE)
+```
+
+
+### Variation between models cars and fuel efficiency 
+
+```{r}
+cars2018 %>% 
+  mutate(model_id = str_c(model, as.character(model_index), sep = ":"),
+         model_id = fct_reorder(model_id, mpg)) %>% 
+  arrange(desc(mpg)) %>% 
+  head(10) %>% 
+  ggplot(aes(model_id, mpg)) + 
+  geom_col() + 
+  coord_flip()
+
+
+cars2018 %>% 
+  mutate(model_id = str_c(model, as.character(model_index), sep = ":"),
+         model_id = fct_reorder(model_id, mpg)) %>% 
+  arrange(desc(mpg)) %>% 
+  tail(10) %>% 
+  ggplot(aes(model_id, mpg)) + 
+  geom_col() + 
+  coord_flip()
+
+```
+
+```{r}
+cars2018 %>% 
+  count(transmission, sort = TRUE) # quite unbalance --> handle with cares 
+```
+
+
+## Simple model 
+
+```{r}
+# Fit a linear model 
+
+fit_all <- lm(mpg ~ ., data = cars2018)
+
+summary(fit_all)
+```
+
+
+## Traning a model 
+
+It's not a good choice to train a model on full datasets. Splitting the data into training dataset and testing dataset would help to identify the overfitting 
+
+Let's use 
+```{r}
+library(tidymodels)
+```
+
+```{r}
+set.seed(1234)
+car_split <- cars2018 %>% 
+  rsample::initial_split(prop = .8, strata = transmission)
+
+car_train <- training(car_split)
+car_test <- testing(car_split)
+```
+
+3 things to deal with:
+- **model type**: linear regression, random forrest, etc
+- **mode**: regression or classification 
+- **engine**: how the model is fit 
+
+
+```{r}
+# build a linear regression specification
+lm_mod <- parsnip::linear_reg() %>% 
+  set_engine("lm")
+
+# train a linear regression model 
+
+fit_lm <- lm_mod %>% 
+  fit(log(mpg) ~ ., data = car_train)
+```
+
+
+```{r}
+# train with random forrest 
+rf_mod <- parsnip::rand_forest() %>% 
+  set_engine("randomForest") %>% 
+  set_mode("regression")
+
+# train a random forest model 
+fit_rf <- rf_mod %>% 
+  fit(log(mpg) ~ ., data = car_train)
+```
+
+
+## Evaluate model performance 
+
+What's we predict
+```{r}
+car_train %>% 
+  mutate(mpg = log(mpg)) %>% 
+  bind_cols(predict(fit_lm, new_data = car_train) %>% 
+              rename(.pred_lm = .pred)) %>% 
+  bind_cols(predict(fit_rf, new_data = car_train) %>% 
+             rename(.pred_rf = .pred))
+```
+
