@@ -1091,7 +1091,7 @@ medium_datasci %&gt;%
   ggplot(aes(claps)) +
   geom_histogram() +
   scale_x_log10(label = scales::comma_format())</code></pre>
-<p><img src="medium-articles_files/figure-html5/unnamed-chunk-8-1.png" width="624" /></p>
+<p><img src="medium-articles_files/figure-html5/unnamed-chunk-8-1.png" width="1800" /></p>
 <pre class="r"><code>
 medium_datasci %&gt;% 
   mutate(reading_time = pmin(10, reading_time)) %&gt;% 
@@ -1100,7 +1100,7 @@ medium_datasci %&gt;%
   scale_x_continuous(breaks = seq(2, 10, 2), 
                      labels = c(seq(2, 8, 2), &quot;10+&quot;)) + 
   labs(x = &quot;Medium reading time&quot;)</code></pre>
-<p><img src="medium-articles_files/figure-html5/unnamed-chunk-8-2.png" width="624" /></p>
+<p><img src="medium-articles_files/figure-html5/unnamed-chunk-8-2.png" width="1800" /></p>
 <pre class="r"><code>
 medium_pivot_longer %&gt;% 
   group_by(tag) %&gt;% 
@@ -1140,7 +1140,7 @@ medium_words %&gt;%
   labs(title = &quot;Common words in Medium post titles&quot;,
        x = &quot;frequency&quot;, 
        y = &quot;&quot;)</code></pre>
-<p><img src="medium-articles_files/figure-html5/unnamed-chunk-9-1.png" width="624" /></p>
+<p><img src="medium-articles_files/figure-html5/unnamed-chunk-9-1.png" width="1800" /></p>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
@@ -1183,7 +1183,7 @@ top_word_cors %&gt;%
    theme_void() + 
    labs(title = &quot;What&#39;s hot and what&#39;s not in the Medium articles&quot;,
         subtitle = &quot;Colour shows the geomtric mean of # claps on articles with this word in the title&quot;)</code></pre>
-<p><img src="medium-articles_files/figure-html5/unnamed-chunk-11-1.png" width="624" /></p>
+<p><img src="medium-articles_files/figure-html5/unnamed-chunk-11-1.png" width="1800" /></p>
 </div>
 <h3 id="predicting-the-number-of-claps-based-on-title-and-tags">Predicting the number of claps based on title and tags</h3>
 <div class="layout-chunk" data-layout="l-body">
