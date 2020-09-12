@@ -17,11 +17,12 @@ Practice and Self-studying from the source of [Julia Sielge][https://supervised-
 # Loading packages 
 ```{r}
 library(tidyverse)
-themeset(theme_light())
+theme_set(theme_light())
 ```
 
 # Chapter 1: Mtcars
 ```{r}
+
 cars2018 <- read_csv("https://raw.githubusercontent.com/juliasilge/supervised-ML-case-studies-course/master/data/cars2018.csv")
 ```
 
@@ -95,9 +96,12 @@ cars2018 %>%
 ## Simple model 
 
 ```{r}
+car_vars <- cars2018 %>% 
+  select(-starts_with("model")) %>% 
+  mutate(across(is.character, factor))
 # Fit a linear model 
 
-fit_all <- lm(mpg ~ ., data = cars2018)
+fit_all <- lm(mpg ~ ., data = car_vars)
 
 summary(fit_all)
 ```
@@ -108,58 +112,112 @@ summary(fit_all)
 It's not a good choice to train a model on full datasets. Splitting the data into training dataset and testing dataset would help to identify the overfitting 
 
 Let's use 
-```{r}
-library(tidymodels)
-```
 
 ```{r}
-set.seed(1234)
-car_split <- cars2018 %>% 
-  rsample::initial_split(prop = .8, strata = transmission)
+library(tidymodels)
+# splitting the data 
+
+car_split <- initial_split(car_vars, 
+                           prop = 0.8, strata = aspiration)
 
 car_train <- training(car_split)
 car_test <- testing(car_split)
-```
 
-3 things to deal with:
-- **model type**: linear regression, random forrest, etc
-- **mode**: regression or classification 
-- **engine**: how the model is fit 
+## a linear regression model specification
+lm_mod <- linear_reg() %>%
+    set_engine("lm")
 
+fit_lm <- lm_mod %>%
+    fit(log(mpg) ~ ., 
+        data = car_train)
 
-```{r}
-# build a linear regression specification
-lm_mod <- parsnip::linear_reg() %>% 
-  set_engine("lm")
+fit_lm
 
-# train a linear regression model 
+## a random forest model specification
+rf_mod <- rand_forest() %>%
+    set_mode("regression") %>%
+    set_engine("randomForest")
 
-fit_lm <- lm_mod %>% 
-  fit(log(mpg) ~ ., data = car_train)
-```
+fit_rf <- rf_mod %>%
+    fit(log(mpg) ~ ., 
+        data = car_train)      
 
-
-```{r}
-# train with random forrest 
-rf_mod <- parsnip::rand_forest() %>% 
-  set_engine("randomForest") %>% 
-  set_mode("regression")
-
-# train a random forest model 
-fit_rf <- rf_mod %>% 
-  fit(log(mpg) ~ ., data = car_train)
+fit_rf
 ```
 
 
 ## Evaluate model performance 
 
-What's we predict
+What's we predict on training data
 ```{r}
-car_train %>% 
-  mutate(mpg = log(mpg)) %>% 
-  bind_cols(predict(fit_lm, new_data = car_train) %>% 
-              rename(.pred_lm = .pred)) %>% 
-  bind_cols(predict(fit_rf, new_data = car_train) %>% 
-             rename(.pred_rf = .pred))
+# Create a new column
+results <- car_train %>%
+    mutate(mpg = log(mpg)) %>%
+    bind_cols(predict(fit_lm, car_train) %>%
+                  rename(.pred_lm = .pred)) %>%
+    bind_cols(predict(fit_rf, car_train) %>%
+                  rename(.pred_rf = .pred))
+
+
+# Evaluate the result
+metrics(results, truth = mpg, estimate = .pred_lm)
+metrics(results, truth = mpg, estimate = .pred_rf)
+
+```
+
+Now apply for the testing dataset
+```{r}
+results <- car_test %>%
+    mutate(mpg = log(mpg)) %>%
+    bind_cols(predict(fit_lm, car_test) %>%
+                  rename(.pred_lm = .pred)) %>%
+    bind_cols(predict(fit_rf, car_test) %>%
+                  rename(.pred_rf = .pred))
+
+
+metrics(results, truth = mpg, estimate = .pred_lm)
+metrics(results, truth = mpg, estimate = .pred_rf)
+```
+
+
+### Bootstrap resampling
+
+```{r}
+# create a bootstrap resamples
+car_boot <- bootstraps(car_train)
+
+# Evaluate the models with bootstrap resampling
+lm_res <- lm_mod %>% 
+  fit_resamples(
+    log(mpg) ~ .,
+    resamples = car_boot,
+    control = control_resamples(save_pred = TRUE)
+  )
+
+rf_res <- rf_mod %>%
+    fit_resamples(
+        log(mpg) ~ .,
+        resamples = car_boot,
+        control = control_resamples(save_pred = TRUE)
+    )
+```
+
+
+```{r}
+results <-  bind_rows(lm_res %>%
+                          collect_predictions() %>%
+                          mutate(model = "lm"),
+                      rf_res %>%
+                          collect_predictions() %>%
+                          mutate(model = "rf"))
+
+glimpse(results)
+
+results %>%
+    ggplot(aes(`log(mpg)`, .pred)) +
+    geom_abline(lty = 2, color = "gray50") +
+    geom_point(aes(color = id), size = 1.5, alpha = 0.3, show.legend = FALSE) +
+    geom_smooth(method = "lm") +
+    facet_wrap(~ model)
 ```
 

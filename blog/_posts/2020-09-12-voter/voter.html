@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+  <meta name="generator" content="distill" />
+
+  <style type="text/css">
+  /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
+  body {
+    visibility: hidden;
+  }
+  </style>
+
+ <!--radix_placeholder_import_source-->
+ <!--/radix_placeholder_import_source-->
+
+  <!--radix_placeholder_meta_tags-->
+  <title>Voter</title>
+  
+  <meta property="description" itemprop="description" content="Introduction to Cross Validation"/>
+  
+  
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2020-09-12"/>
+  <meta property="article:created" itemprop="dateCreated" content="2020-09-12"/>
+  <meta name="article:author" content="Thinh Tran"/>
+  
+  <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
+  <meta property="og:title" content="Voter"/>
+  <meta property="og:type" content="article"/>
+  <meta property="og:description" content="Introduction to Cross Validation"/>
+  <meta property="og:locale" content="en_US"/>
+  
+  <!--  https://dev.twitter.com/cards/types/summary -->
+  <meta property="twitter:card" content="summary"/>
+  <meta property="twitter:title" content="Voter"/>
+  <meta property="twitter:description" content="Introduction to Cross Validation"/>
+  
+  <!--/radix_placeholder_meta_tags-->
+  <!--radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-rmarkdown-metadata">
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Voter"]},{"type":"character","attributes":{},"value":["Introduction to Cross Validation\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Thinh Tran"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":[]}},"value":[]}]}]},{"type":"character","attributes":{},"value":["09-12-2020"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
+  </script>
+  <!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["voter_files/bowser-1.9.3/bowser.min.js","voter_files/distill-2.2.21/template.v2.js","voter_files/figure-html5/unnamed-chunk-7-1.png","voter_files/jquery-1.11.3/jquery.min.js","voter_files/webcomponents-2.0.0/webcomponents.js"]}
+  </script>
+  <!--radix_placeholder_navigation_in_header-->
+  <!--/radix_placeholder_navigation_in_header-->
+  <!--radix_placeholder_distill-->
+  
+  <style type="text/css">
+  
+  body {
+    background-color: white;
+  }
+  
+  .pandoc-table {
+    width: 100%;
+  }
+  
+  .pandoc-table>caption {
+    margin-bottom: 10px;
+  }
+  
+  .pandoc-table th:not([align]) {
+    text-align: left;
+  }
+  
+  .pagedtable-footer {
+    font-size: 15px;
+  }
+  
+  .html-widget {
+    margin-bottom: 2.0em;
+  }
+  
+  .l-screen-inset {
+    padding-right: 16px;
+  }
+  
+  .l-screen .caption {
+    margin-left: 10px;
+  }
+  
+  .shaded {
+    background: rgb(247, 247, 247);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .shaded .html-widget {
+    margin-bottom: 0;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .shaded .shaded-content {
+    background: white;
+  }
+  
+  .text-output {
+    margin-top: 0;
+    line-height: 1.5em;
+  }
+  
+  .hidden {
+    display: none !important;
+  }
+  
+  d-article {
+    padding-bottom: 30px;
+  }
+  
+  d-appendix {
+    padding-top: 30px;
+  }
+  
+  d-article>p>img {
+    width: 100%;
+  }
+  
+  d-article iframe {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 2.0em;
+    width: 100%;
+  }
+  
+  figure img.external {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    box-sizing: border-box;
+  }
+  
+  /* CSS for table of contents */
+  
+  .d-toc {
+    color: rgba(0,0,0,0.8);
+    font-size: 0.8em;
+    line-height: 1em;
+  }
+  
+  .d-toc-header {
+    font-size: 0.6rem;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.5);
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 1.3em;
+  }
+  
+  .d-toc a {
+    border-bottom: none;
+  }
+  
+  .d-toc ul {
+    padding-left: 0;
+  }
+  
+  .d-toc li>ul {
+    padding-top: 0.8em;
+    padding-left: 16px;
+    margin-bottom: 0.6em;
+  }
+  
+  .d-toc ul,
+  .d-toc li {
+    list-style-type: none;
+  }
+  
+  .d-toc li {
+    margin-bottom: 0.9em;
+  }
+  
+  .d-toc-separator {
+    margin-top: 20px;
+    margin-bottom: 2em;
+  }
+  
+  .d-article-with-toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  
+  
+  
+  /* Tweak code blocks (note that this CSS is repeated above in an injection
+     into the d-code shadow dom) */
+  
+  d-code {
+    overflow-x: auto !important;
+  }
+  
+  pre.d-code code.d-code {
+    padding-left: 10px;
+    font-size: 12px;
+    border-left: 2px solid rgba(0,0,0,0.1);
+  }
+  
+  pre.text-output {
+  
+    font-size: 12px;
+    color: black;
+    background: none;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+  
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+  
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+  
+  @media(min-width: 768px) {
+  
+  d-code {
+    overflow-x: visible !important;
+  }
+  
+  pre.d-code code.d-code  {
+      padding-left: 18px;
+      font-size: 14px;
+  }
+  pre.text-output {
+    font-size: 14px;
+  }
+  }
+  
+  /* Figure */
+  
+  .figure {
+    position: relative;
+    margin-bottom: 2.5em;
+    margin-top: 1.5em;
+  }
+  
+  .figure img {
+    width: 100%;
+  }
+  
+  .figure .caption {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 12px;
+    line-height: 1.5em;
+  }
+  
+  .figure img.external {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    box-sizing: border-box;
+  }
+  
+  .figure .caption a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  .figure .caption b,
+  .figure .caption strong, {
+    font-weight: 600;
+    color: rgba(0, 0, 0, 1.0);
+  }
+  
+  
+  
+  /* Tweak 1000px media break to show more text */
+  
+  @media(min-width: 1000px) {
+    .base-grid,
+    distill-header,
+    d-title,
+    d-abstract,
+    d-article,
+    d-appendix,
+    distill-appendix,
+    d-byline,
+    d-footnote-list,
+    d-citation-list,
+    distill-footer {
+      grid-template-columns: [screen-start] 1fr [page-start kicker-start] 80px [middle-start] 50px [text-start kicker-end] 65px 65px 65px 65px 65px 65px 65px 65px [text-end gutter-start] 65px [middle-end] 65px [page-end gutter-end] 1fr [screen-end];
+      grid-column-gap: 16px;
+    }
+  
+    .grid {
+      grid-column-gap: 16px;
+    }
+  
+    d-article {
+      font-size: 1.06rem;
+      line-height: 1.7em;
+    }
+    figure .caption, .figure .caption, figure figcaption {
+      font-size: 13px;
+    }
+  }
+  
+  @media(min-width: 1180px) {
+    .base-grid,
+    distill-header,
+    d-title,
+    d-abstract,
+    d-article,
+    d-appendix,
+    distill-appendix,
+    d-byline,
+    d-footnote-list,
+    d-citation-list,
+    distill-footer {
+      grid-template-columns: [screen-start] 1fr [page-start kicker-start] 60px [middle-start] 60px [text-start kicker-end] 60px 60px 60px 60px 60px 60px 60px 60px [text-end gutter-start] 60px [middle-end] 60px [page-end gutter-end] 1fr [screen-end];
+      grid-column-gap: 32px;
+    }
+  
+    .grid {
+      grid-column-gap: 32px;
+    }
+  }
+  
+  
+  /* Get the citation styles for the appendix (not auto-injected on render since
+     we do our own rendering of the citation appendix) */
+  
+  d-appendix .citation-appendix,
+  .d-appendix .citation-appendix {
+    font-size: 11px;
+    line-height: 15px;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    padding-left: 18px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.02);
+    padding: 10px 18px;
+    border-radius: 3px;
+    color: rgba(150, 150, 150, 1);
+    overflow: hidden;
+    margin-top: -12px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  
+  
+  /* Social footer */
+  
+  .social_footer {
+    margin-top: 30px;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.67);
+  }
+  
+  .disqus-comments {
+    margin-right: 30px;
+  }
+  
+  .disqus-comment-count {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+  }
+  
+  #disqus_thread {
+    margin-top: 30px;
+  }
+  
+  .article-sharing a {
+    border-bottom: none;
+    margin-right: 8px;
+  }
+  
+  .article-sharing a:hover {
+    border-bottom: none;
+  }
+  
+  .sidebar-section.subscribe {
+    font-size: 12px;
+    line-height: 1.6em;
+  }
+  
+  .subscribe p {
+    margin-bottom: 0.5em;
+  }
+  
+  
+  .article-footer .subscribe {
+    font-size: 15px;
+    margin-top: 45px;
+  }
+  
+  
+  .sidebar-section.custom {
+    font-size: 12px;
+    line-height: 1.6em;
+  }
+  
+  .custom p {
+    margin-bottom: 0.5em;
+  }
+  
+  
+  /* Improve display for browsers without grid (IE/Edge <= 15) */
+  
+  .downlevel {
+    line-height: 1.6em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+  }
+  
+  .downlevel .d-title {
+    padding-top: 6rem;
+    padding-bottom: 1.5rem;
+  }
+  
+  .downlevel .d-title h1 {
+    font-size: 50px;
+    font-weight: 700;
+    line-height: 1.1em;
+    margin: 0 0 0.5rem;
+  }
+  
+  .downlevel .d-title p {
+    font-weight: 300;
+    font-size: 1.2rem;
+    line-height: 1.55em;
+    margin-top: 0;
+  }
+  
+  .downlevel .d-byline {
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    font-size: 0.8rem;
+    line-height: 1.8em;
+  }
+  
+  .downlevel .section-separator {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .downlevel .d-article {
+    font-size: 1.06rem;
+    line-height: 1.7em;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+  }
+  
+  
+  .downlevel .d-appendix {
+    padding-left: 0;
+    padding-right: 0;
+    max-width: none;
+    font-size: 0.8em;
+    line-height: 1.7em;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.5);
+    padding-top: 40px;
+    padding-bottom: 48px;
+  }
+  
+  .downlevel .footnotes ol {
+    padding-left: 13px;
+  }
+  
+  .downlevel .base-grid,
+  .downlevel .distill-header,
+  .downlevel .d-title,
+  .downlevel .d-abstract,
+  .downlevel .d-article,
+  .downlevel .d-appendix,
+  .downlevel .distill-appendix,
+  .downlevel .d-byline,
+  .downlevel .d-footnote-list,
+  .downlevel .d-citation-list,
+  .downlevel .distill-footer,
+  .downlevel .appendix-bottom,
+  .downlevel .posts-container {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+  
+  @media(min-width: 768px) {
+    .downlevel .base-grid,
+    .downlevel .distill-header,
+    .downlevel .d-title,
+    .downlevel .d-abstract,
+    .downlevel .d-article,
+    .downlevel .d-appendix,
+    .downlevel .distill-appendix,
+    .downlevel .d-byline,
+    .downlevel .d-footnote-list,
+    .downlevel .d-citation-list,
+    .downlevel .distill-footer,
+    .downlevel .appendix-bottom,
+    .downlevel .posts-container {
+    padding-left: 150px;
+    padding-right: 150px;
+    max-width: 900px;
+  }
+  }
+  
+  .downlevel pre code {
+    display: block;
+    border-left: 2px solid rgba(0, 0, 0, .1);
+    padding: 0 0 0 20px;
+    font-size: 14px;
+  }
+  
+  .downlevel code, .downlevel pre {
+    color: black;
+    background: none;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+  
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+  
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+  
+  </style>
+  
+  <script type="application/javascript">
+  
+  function is_downlevel_browser() {
+    if (bowser.isUnsupportedBrowser({ msie: "12", msedge: "16"},
+                                   window.navigator.userAgent)) {
+      return true;
+    } else {
+      return window.load_distill_framework === undefined;
+    }
+  }
+  
+  // show body when load is complete
+  function on_load_complete() {
+  
+    // set body to visible
+    document.body.style.visibility = 'visible';
+  
+    // force redraw for leaflet widgets
+    if (window.HTMLWidgets) {
+      var maps = window.HTMLWidgets.findAll(".leaflet");
+      $.each(maps, function(i, el) {
+        var map = this.getMap();
+        map.invalidateSize();
+        map.eachLayer(function(layer) {
+          if (layer instanceof L.TileLayer)
+            layer.redraw();
+        });
+      });
+    }
+  
+    // trigger 'shown' so htmlwidgets resize
+    $('d-article').trigger('shown');
+  }
+  
+  function init_distill() {
+  
+    init_common();
+  
+    // create front matter
+    var front_matter = $('<d-front-matter></d-front-matter>');
+    $('#distill-front-matter').wrap(front_matter);
+  
+    // create d-title
+    $('.d-title').changeElementType('d-title');
+  
+    // create d-byline
+    var byline = $('<d-byline></d-byline>');
+    $('.d-byline').replaceWith(byline);
+  
+    // create d-article
+    var article = $('<d-article></d-article>');
+    $('.d-article').wrap(article).children().unwrap();
+  
+    // move posts container into article
+    $('.posts-container').appendTo($('d-article'));
+  
+    // create d-appendix
+    $('.d-appendix').changeElementType('d-appendix');
+  
+    // create d-bibliography
+    var bibliography = $('<d-bibliography></d-bibliography>');
+    $('#distill-bibliography').wrap(bibliography);
+  
+    // flag indicating that we have appendix items
+    var appendix = $('.appendix-bottom').children('h3').length > 0;
+  
+    // replace citations with <d-cite>
+    $('.citation').each(function(i, val) {
+      appendix = true;
+      var cites = $(this).attr('data-cites').split(" ");
+      var dt_cite = $('<d-cite></d-cite>');
+      dt_cite.attr('key', cites.join());
+      $(this).replaceWith(dt_cite);
+    });
+    // remove refs
+    $('#refs').remove();
+  
+    // replace footnotes with <d-footnote>
+    $('.footnote-ref').each(function(i, val) {
+      appendix = true;
+      var href = $(this).attr('href');
+      var id = href.replace('#', '');
+      var fn = $('#' + id);
+      var fn_p = $('#' + id + '>p');
+      fn_p.find('.footnote-back').remove();
+      var text = fn_p.html();
+      var dtfn = $('<d-footnote></d-footnote>');
+      dtfn.html(text);
+      $(this).replaceWith(dtfn);
+    });
+    // remove footnotes
+    $('.footnotes').remove();
+  
+    $('h1.appendix, h2.appendix').each(function(i, val) {
+      $(this).changeElementType('h3');
+    });
+    $('h3.appendix').each(function(i, val) {
+      var id = $(this).attr('id');
+      $('.d-toc a[href="#' + id + '"]').parent().remove();
+      appendix = true;
+      $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('d-appendix'));
+    });
+  
+    // show d-appendix if we have appendix content
+    $("d-appendix").css('display', appendix ? 'grid' : 'none');
+  
+    // replace code blocks with d-code
+    $('pre>code').each(function(i, val) {
+      var code = $(this);
+      var pre = code.parent();
+      var clz = "";
+      var language = pre.attr('class');
+      if (language) {
+        // map unknown languages to "clike" (without this they just dissapear)
+        if ($.inArray(language, ["bash", "clike", "css", "go", "html",
+                                 "javascript", "js", "julia", "lua", "markdown",
+                                 "markup", "mathml", "python", "svg", "xml"]) == -1)
+          language = "clike";
+        language = ' language="' + language + '"';
+        var dt_code = $('<d-code block' + language + clz + '></d-code>');
+        dt_code.text(code.text());
+        pre.replaceWith(dt_code);
+      } else {
+        code.addClass('text-output').unwrap().changeElementType('pre');
+      }
+    });
+  
+    // localize layout chunks to just output
+    $('.layout-chunk').each(function(i, val) {
+  
+      // capture layout
+      var layout = $(this).attr('data-layout');
+  
+      // apply layout to markdown level block elements
+      var elements = $(this).children().not('d-code, pre.text-output, script');
+      elements.each(function(i, el) {
+        var layout_div = $('<div class="' + layout + '"></div>');
+        if (layout_div.hasClass('shaded')) {
+          var shaded_content = $('<div class="shaded-content"></div>');
+          $(this).wrap(shaded_content);
+          $(this).parent().wrap(layout_div);
+        } else {
+          $(this).wrap(layout_div);
+        }
+      });
+  
+  
+      // unwrap the layout-chunk div
+      $(this).children().unwrap();
+    });
+  
+    // load distill framework
+    load_distill_framework();
+  
+    // wait for window.distillRunlevel == 4 to do post processing
+    function distill_post_process() {
+  
+      if (!window.distillRunlevel || window.distillRunlevel < 4)
+        return;
+  
+      // hide author/affiliations entirely if we have no authors
+      var front_matter = JSON.parse($("#distill-front-matter").html());
+      var have_authors = front_matter.authors && front_matter.authors.length > 0;
+      if (!have_authors)
+        $('d-byline').addClass('hidden');
+  
+      // table of contents
+      if (have_authors) // adjust border if we are in authors
+        $('.d-toc').parent().addClass('d-article-with-toc');
+  
+      // strip links that point to #
+      $('.authors-affiliations').find('a[href="#"]').removeAttr('href');
+  
+      // hide elements of author/affiliations grid that have no value
+      function hide_byline_column(caption) {
+        $('d-byline').find('h3:contains("' + caption + '")').parent().css('visibility', 'hidden');
+      }
+  
+      // affiliations
+      var have_affiliations = false;
+      for (var i = 0; i<front_matter.authors.length; ++i) {
+        var author = front_matter.authors[i];
+        if (author.affiliation !== "&nbsp;") {
+          have_affiliations = true;
+          break;
+        }
+      }
+      if (!have_affiliations)
+        $('d-byline').find('h3:contains("Affiliations")').css('visibility', 'hidden');
+  
+      // published date
+      if (!front_matter.publishedDate)
+        hide_byline_column("Published");
+  
+      // document object identifier
+      var doi = $('d-byline').find('h3:contains("DOI")');
+      var doi_p = doi.next().empty();
+      if (!front_matter.doi) {
+        // if we have a citation and valid citationText then link to that
+        if ($('#citation').length > 0 && front_matter.citationText) {
+          doi.html('Citation');
+          $('<a href="#citation"></a>')
+            .text(front_matter.citationText)
+            .appendTo(doi_p);
+        } else {
+          hide_byline_column("DOI");
+        }
+      } else {
+        $('<a></a>')
+           .attr('href', "https://doi.org/" + front_matter.doi)
+           .html(front_matter.doi)
+           .appendTo(doi_p);
+      }
+  
+       // change plural form of authors/affiliations
+      if (front_matter.authors.length === 1) {
+        var grid = $('.authors-affiliations');
+        grid.children('h3:contains("Authors")').text('Author');
+        grid.children('h3:contains("Affiliations")').text('Affiliation');
+      }
+  
+      // inject pre code styles (can't do this with a global stylesheet b/c a shadow root is used)
+      $('d-code').each(function(i, val) {
+        var style = document.createElement('style');
+        style.innerHTML = 'pre code { padding-left: 10px; font-size: 12px; border-left: 2px solid rgba(0,0,0,0.1); } ' +
+                          '@media(min-width: 768px) { pre code { padding-left: 18px; font-size: 14px; } }';
+        if (this.shadowRoot)
+          this.shadowRoot.appendChild(style);
+      });
+  
+      // move appendix-bottom entries to the bottom
+      $('.appendix-bottom').appendTo('d-appendix').children().unwrap();
+      $('.appendix-bottom').remove();
+  
+      // clear polling timer
+      clearInterval(tid);
+  
+      // show body now that everything is ready
+      on_load_complete();
+    }
+  
+    var tid = setInterval(distill_post_process, 50);
+    distill_post_process();
+  
+  }
+  
+  function init_downlevel() {
+  
+    init_common();
+  
+     // insert hr after d-title
+    $('.d-title').after($('<hr class="section-separator"/>'));
+  
+    // check if we have authors
+    var front_matter = JSON.parse($("#distill-front-matter").html());
+    var have_authors = front_matter.authors && front_matter.authors.length > 0;
+  
+    // manage byline/border
+    if (!have_authors)
+      $('.d-byline').remove();
+    $('.d-byline').after($('<hr class="section-separator"/>'));
+    $('.d-byline a').remove();
+  
+    // remove toc
+    $('.d-toc-header').remove();
+    $('.d-toc').remove();
+    $('.d-toc-separator').remove();
+  
+    // move appendix elements
+    $('h1.appendix, h2.appendix').each(function(i, val) {
+      $(this).changeElementType('h3');
+    });
+    $('h3.appendix').each(function(i, val) {
+      $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('.d-appendix'));
+    });
+  
+  
+    // inject headers into references and footnotes
+    var refs_header = $('<h3></h3>');
+    refs_header.text('References');
+    $('#refs').prepend(refs_header);
+  
+    var footnotes_header = $('<h3></h3');
+    footnotes_header.text('Footnotes');
+    $('.footnotes').children('hr').first().replaceWith(footnotes_header);
+  
+    // move appendix-bottom entries to the bottom
+    $('.appendix-bottom').appendTo('.d-appendix').children().unwrap();
+    $('.appendix-bottom').remove();
+  
+    // remove appendix if it's empty
+    if ($('.d-appendix').children().length === 0)
+      $('.d-appendix').remove();
+  
+    // prepend separator above appendix
+    $('.d-appendix').before($('<hr class="section-separator" style="clear: both"/>'));
+  
+    // trim code
+    $('pre>code').each(function(i, val) {
+      $(this).html($.trim($(this).html()));
+    });
+  
+    // move posts-container right before article
+    $('.posts-container').insertBefore($('.d-article'));
+  
+    $('body').addClass('downlevel');
+  
+    on_load_complete();
+  }
+  
+  
+  function init_common() {
+  
+    // jquery plugin to change element types
+    (function($) {
+      $.fn.changeElementType = function(newType) {
+        var attrs = {};
+  
+        $.each(this[0].attributes, function(idx, attr) {
+          attrs[attr.nodeName] = attr.nodeValue;
+        });
+  
+        this.replaceWith(function() {
+          return $("<" + newType + "/>", attrs).append($(this).contents());
+        });
+      };
+    })(jQuery);
+  
+    // prevent underline for linked images
+    $('a > img').parent().css({'border-bottom' : 'none'});
+  
+    // mark non-body figures created by knitr chunks as 100% width
+    $('.layout-chunk').each(function(i, val) {
+      var figures = $(this).find('img, .html-widget');
+      if ($(this).attr('data-layout') !== "l-body") {
+        figures.css('width', '100%');
+      } else {
+        figures.css('max-width', '100%');
+        figures.filter("[width]").each(function(i, val) {
+          var fig = $(this);
+          fig.css('width', fig.attr('width') + 'px');
+        });
+  
+      }
+    });
+  
+    // auto-append index.html to post-preview links in file: protocol
+    // and in rstudio ide preview
+    $('.post-preview').each(function(i, val) {
+      if (window.location.protocol === "file:")
+        $(this).attr('href', $(this).attr('href') + "index.html");
+    });
+  
+    // get rid of index.html references in header
+    if (window.location.protocol !== "file:") {
+      $('.distill-site-header a[href]').each(function(i,val) {
+        $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+      });
+    }
+  
+    // add class to pandoc style tables
+    $('tr.header').parent('thead').parent('table').addClass('pandoc-table');
+    $('.kable-table').children('table').addClass('pandoc-table');
+  
+    // add figcaption style to table captions
+    $('caption').parent('table').addClass("figcaption");
+  
+    // initialize posts list
+    if (window.init_posts_list)
+      window.init_posts_list();
+  
+    // implmement disqus comment link
+    $('.disqus-comment-count').click(function() {
+      window.headroom_prevent_pin = true;
+      $('#disqus_thread').toggleClass('hidden');
+      if (!$('#disqus_thread').hasClass('hidden')) {
+        var offset = $(this).offset();
+        $(window).resize();
+        $('html, body').animate({
+          scrollTop: offset.top - 35
+        });
+      }
+    });
+  }
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    if (is_downlevel_browser())
+      init_downlevel();
+    else
+      window.addEventListener('WebComponentsReady', init_distill);
+  });
+  
+  </script>
+  
+  <!--/radix_placeholder_distill-->
+  <script src="voter_files/jquery-1.11.3/jquery.min.js"></script>
+  <script src="voter_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="voter_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="voter_files/distill-2.2.21/template.v2.js"></script>
+  <!--radix_placeholder_site_in_header-->
+  <!--/radix_placeholder_site_in_header-->
+
+
+</head>
+
+<body>
+
+<!--radix_placeholder_front_matter-->
+
+<script id="distill-front-matter" type="text/json">
+{"title":"Voter","description":"Introduction to Cross Validation","authors":[{"author":"Thinh Tran","authorURL":{},"affiliation":"&nbsp;","affiliationURL":"#"}],"publishedDate":"2020-09-12T00:00:00.000+07:00","citationText":"Tran, 2020"}
+</script>
+
+<!--/radix_placeholder_front_matter-->
+<!--radix_placeholder_navigation_before_body-->
+<!--/radix_placeholder_navigation_before_body-->
+<!--radix_placeholder_site_before_body-->
+<!--/radix_placeholder_site_before_body-->
+
+<div class="d-title">
+<h1>Voter</h1>
+<p><p>Introduction to Cross Validation</p></p>
+</div>
+
+<div class="d-byline">
+  Thinh Tran true 
+  
+<br/>09-12-2020
+</div>
+
+<div class="d-article">
+<h1 id="prerequisite">Prerequisite</h1>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+library(tidyverse)
+library(gt)
+theme_set(theme_light())</code></pre>
+</div>
+<h1 id="loading-the-data">Loading the data</h1>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+voters &lt;- read_csv(&quot;https://raw.githubusercontent.com/juliasilge/supervised-ML-case-studies-course/master/data/voters.csv&quot;)</code></pre>
+</div>
+<p>Useful info</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+tribble(~Response, ~ Code,
+        &quot;strongly agree&quot;, 1,
+        &quot;agree&quot;, 2,
+        &quot;disagree&quot;, 3,
+        &quot;strongly disagree&quot;, 4) %&gt;% 
+  mutate(Response = str_to_title(Response)) %&gt;% 
+  gt() %&gt;% 
+  tab_style(
+    style = list(
+      cell_text(weight = &quot;bold&quot;)),
+    locations = cells_column_labels(everything())
+  ) %&gt;% 
+  opt_table_lines(&quot;default&quot;)</code></pre>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#otmzvixapg .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#otmzvixapg .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#otmzvixapg .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#otmzvixapg .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#otmzvixapg .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#otmzvixapg .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#otmzvixapg .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#otmzvixapg .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#otmzvixapg .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#otmzvixapg .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#otmzvixapg .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#otmzvixapg .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#otmzvixapg .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#otmzvixapg .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#otmzvixapg .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#otmzvixapg .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#otmzvixapg .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#otmzvixapg .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#otmzvixapg .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#otmzvixapg .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#otmzvixapg .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#otmzvixapg .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#otmzvixapg .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#otmzvixapg .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#otmzvixapg .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#otmzvixapg .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#otmzvixapg .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#otmzvixapg .gt_left {
+  text-align: left;
+}
+
+#otmzvixapg .gt_center {
+  text-align: center;
+}
+
+#otmzvixapg .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#otmzvixapg .gt_font_normal {
+  font-weight: normal;
+}
+
+#otmzvixapg .gt_font_bold {
+  font-weight: bold;
+}
+
+#otmzvixapg .gt_font_italic {
+  font-style: italic;
+}
+
+#otmzvixapg .gt_super {
+  font-size: 65%;
+}
+
+#otmzvixapg .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="otmzvixapg" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">Response</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;">Code</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">Strongly Agree</td>
+      <td class="gt_row gt_right">1</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Agree</td>
+      <td class="gt_row gt_right">2</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Disagree</td>
+      <td class="gt_row gt_right">3</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Strongly Disagree</td>
+      <td class="gt_row gt_right">4</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+</div>
+<h1 id="eda">EDA</h1>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+voters %&gt;% 
+  glimpse()</code></pre>
+<pre><code>
+Rows: 6,692
+Columns: 43
+$ case_identifier      &lt;dbl&gt; 779, 2108, 2597, 4148, 4460, 5225, 590…
+$ turnout16_2016       &lt;chr&gt; &quot;Voted&quot;, &quot;Voted&quot;, &quot;Voted&quot;, &quot;Voted&quot;, &quot;V…
+$ RIGGED_SYSTEM_1_2016 &lt;dbl&gt; 3, 2, 2, 1, 3, 3, 3, 2, 4, 2, 3, 3, 4,…
+$ RIGGED_SYSTEM_2_2016 &lt;dbl&gt; 4, 1, 4, 4, 1, 3, 4, 3, 4, 3, 2, 2, 3,…
+$ RIGGED_SYSTEM_3_2016 &lt;dbl&gt; 1, 3, 1, 1, 3, 2, 1, 3, 1, 1, 1, 4, 1,…
+$ RIGGED_SYSTEM_4_2016 &lt;dbl&gt; 4, 1, 4, 4, 1, 2, 1, 2, 3, 2, 4, 1, 3,…
+$ RIGGED_SYSTEM_5_2016 &lt;dbl&gt; 3, 3, 1, 2, 3, 2, 2, 1, 3, 2, 2, 2, 3,…
+$ RIGGED_SYSTEM_6_2016 &lt;dbl&gt; 2, 2, 1, 1, 2, 3, 1, 2, 1, 2, 1, 1, 1,…
+$ track_2016           &lt;dbl&gt; 2, 2, 1, 1, 2, 2, 1, 2, 2, 2, 1, 2, 2,…
+$ persfinretro_2016    &lt;dbl&gt; 2, 3, 3, 1, 2, 2, 2, 3, 2, 1, 2, 3, 2,…
+$ econtrend_2016       &lt;dbl&gt; 1, 3, 3, 1, 2, 2, 1, 3, 1, 1, 1, 3, 2,…
+$ Americatrend_2016    &lt;dbl&gt; 1, 1, 1, 3, 3, 1, 2, 3, 2, 1, 3, 3, 2,…
+$ futuretrend_2016     &lt;dbl&gt; 4, 1, 1, 3, 4, 3, 1, 3, 1, 1, 3, 1, 1,…
+$ wealth_2016          &lt;dbl&gt; 2, 1, 2, 2, 1, 2, 2, 1, 2, 2, 2, 1, 2,…
+$ values_culture_2016  &lt;dbl&gt; 2, 3, 3, 3, 3, 2, 3, 3, 1, 3, 3, 2, 1,…
+$ US_respect_2016      &lt;dbl&gt; 2, 3, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3,…
+$ trustgovt_2016       &lt;dbl&gt; 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3,…
+$ trust_people_2016    &lt;dbl&gt; 8, 2, 1, 1, 1, 2, 2, 1, 2, 1, 2, 1, 2,…
+$ helpful_people_2016  &lt;dbl&gt; 1, 1, 2, 1, 1, 1, 2, 2, 1, 2, 2, 1, 1,…
+$ fair_people_2016     &lt;dbl&gt; 8, 2, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 2,…
+$ imiss_a_2016         &lt;dbl&gt; 2, 1, 1, 1, 1, 2, 1, 1, 3, 1, 1, 1, 2,…
+$ imiss_b_2016         &lt;dbl&gt; 2, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2,…
+$ imiss_c_2016         &lt;dbl&gt; 1, 2, 2, 3, 1, 2, 2, 1, 4, 2, 3, 1, 2,…
+$ imiss_d_2016         &lt;dbl&gt; 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 3, 2,…
+$ imiss_e_2016         &lt;dbl&gt; 1, 1, 3, 1, 1, 3, 1, 2, 1, 1, 2, 2, 4,…
+$ imiss_f_2016         &lt;dbl&gt; 2, 1, 1, 2, 1, 2, 1, 3, 2, 1, 1, 1, 2,…
+$ imiss_g_2016         &lt;dbl&gt; 1, 4, 3, 3, 3, 1, 3, 4, 2, 2, 1, 4, 1,…
+$ imiss_h_2016         &lt;dbl&gt; 1, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1,…
+$ imiss_i_2016         &lt;dbl&gt; 2, 2, 4, 4, 2, 1, 1, 3, 2, 1, 1, 2, 1,…
+$ imiss_j_2016         &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+$ imiss_k_2016         &lt;dbl&gt; 1, 2, 1, 1, 2, 1, 1, 4, 2, 1, 1, 3, 1,…
+$ imiss_l_2016         &lt;dbl&gt; 1, 4, 1, 2, 4, 1, 1, 3, 1, 1, 1, 4, 2,…
+$ imiss_m_2016         &lt;dbl&gt; 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,…
+$ imiss_n_2016         &lt;dbl&gt; 1, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 2,…
+$ imiss_o_2016         &lt;dbl&gt; 2, 1, 1, 1, 1, 2, 1, 2, 2, 1, 1, 2, 2,…
+$ imiss_p_2016         &lt;dbl&gt; 2, 1, 2, 3, 1, 3, 1, 1, 4, 1, 1, 1, 2,…
+$ imiss_q_2016         &lt;dbl&gt; 1, 1, 1, 2, 2, 1, 1, 4, 2, 1, 1, 3, 1,…
+$ imiss_r_2016         &lt;dbl&gt; 2, 1, 1, 2, 1, 2, 1, 2, 4, 2, 2, 1, 3,…
+$ imiss_s_2016         &lt;dbl&gt; 1, 2, 1, 2, 2, 1, 1, 1, 1, 1, 1, 3, 1,…
+$ imiss_t_2016         &lt;dbl&gt; 1, 1, 3, 3, 1, 1, 3, 4, 1, 1, 1, 3, 1,…
+$ imiss_u_2016         &lt;dbl&gt; 2, 2, 2, 2, 1, 3, 3, 1, 4, 2, 3, 2, 4,…
+$ imiss_x_2016         &lt;dbl&gt; 1, 3, 1, 2, 1, 1, 1, 4, 1, 1, 1, 2, 1,…
+$ imiss_y_2016         &lt;dbl&gt; 1, 4, 2, 3, 1, 1, 1, 3, 2, 1, 1, 3, 1,…</code></pre>
+</div>
+<h2 id="how-many-people-voted">How many people voted?</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+voters %&gt;% 
+  count(turnout16_2016)</code></pre>
+<pre><code>
+# A tibble: 2 x 2
+  turnout16_2016     n
+  &lt;chr&gt;          &lt;int&gt;
+1 Did not vote     264
+2 Voted           6428</code></pre>
+</div>
+<h2 id="how-do-the-responses-on-the-survey-vary-with-voting-behavior">How do the responses on the survey vary with voting behavior?</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+voters %&gt;%
+    group_by(turnout16_2016) %&gt;%
+    summarise(`Elections don&#39;t matter` = mean(RIGGED_SYSTEM_1_2016 &lt;= 2),
+              `Economy is getting better` = mean(econtrend_2016 == 1),
+              `Crime is very important` = mean(imiss_a_2016 == 2)) %&gt;% 
+  gt() %&gt;% 
+  tab_style(
+    style = list(
+      cell_text(weight = &quot;bold&quot;)),
+    locations = cells_column_labels(everything())
+  ) %&gt;% 
+  tab_options(
+    column_labels.border.top.color = &quot;white&quot;,
+    column_labels.border.top.width = px(3),
+    column_labels.border.bottom.color = &quot;black&quot;,
+    table_body.hlines.color = &quot;white&quot;,
+    table.border.bottom.color = &quot;white&quot;,
+    table.border.bottom.width = px(3)
+  ) %&gt;% 
+  tab_spanner(
+    label = md(&quot;Survey questions&quot;),
+    columns = 2:4) %&gt;% 
+  cols_label(
+    turnout16_2016 = &quot;Turnout&quot;,
+    `Elections don&#39;t matter` = &quot;Elections don&#39;t matter&quot;,
+    `Economy is getting better` = &quot;Economy is getting better&quot;,
+    `Crime is very important` = &quot;Crime is very important&quot;
+  ) %&gt;% 
+  fmt_percent(
+    columns = 2:4
+  )</code></pre>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#jecalxigpa .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 3px;
+  border-bottom-color: white;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#jecalxigpa .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#jecalxigpa .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#jecalxigpa .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#jecalxigpa .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jecalxigpa .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 3px;
+  border-top-color: white;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: black;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#jecalxigpa .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#jecalxigpa .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#jecalxigpa .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#jecalxigpa .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#jecalxigpa .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: black;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#jecalxigpa .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#jecalxigpa .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#jecalxigpa .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#jecalxigpa .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#jecalxigpa .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: white;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#jecalxigpa .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#jecalxigpa .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jecalxigpa .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#jecalxigpa .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jecalxigpa .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#jecalxigpa .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#jecalxigpa .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jecalxigpa .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#jecalxigpa .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#jecalxigpa .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#jecalxigpa .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#jecalxigpa .gt_left {
+  text-align: left;
+}
+
+#jecalxigpa .gt_center {
+  text-align: center;
+}
+
+#jecalxigpa .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#jecalxigpa .gt_font_normal {
+  font-weight: normal;
+}
+
+#jecalxigpa .gt_font_bold {
+  font-weight: bold;
+}
+
+#jecalxigpa .gt_font_italic {
+  font-style: italic;
+}
+
+#jecalxigpa .gt_super {
+  font-size: 65%;
+}
+
+#jecalxigpa .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="jecalxigpa" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_center gt_columns_bottom_border" rowspan="2" colspan="1" style="font-weight: bold;">Turnout</th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="3">
+        <span class="gt_column_spanner">Survey questions</span>
+      </th>
+    </tr>
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="font-weight: bold;">Elections don't matter</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="font-weight: bold;">Economy is getting better</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="font-weight: bold;">Crime is very important</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">Did not vote</td>
+      <td class="gt_row gt_right">55.30&percnt;</td>
+      <td class="gt_row gt_right">16.29&percnt;</td>
+      <td class="gt_row gt_right">29.17&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Voted</td>
+      <td class="gt_row gt_right">34.05&percnt;</td>
+      <td class="gt_row gt_right">28.87&percnt;</td>
+      <td class="gt_row gt_right">34.23&percnt;</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+voters %&gt;%
+    ggplot(aes(econtrend_2016, after_stat(density), fill = turnout16_2016)) +
+    geom_histogram(alpha = 0.5, position = &quot;identity&quot;, binwidth = 1) +
+    labs(title = &quot;How is the economy among the voter view?&quot;)</code></pre>
+<p><img src="voter_files/figure-html5/unnamed-chunk-7-1.png" width="624" /></p>
+</div>
+<h1 id="make-a-prediction-on-whether-a-person-vote-or-dont-vote-based-on-their-answers">Make a prediction on whether a person vote or don’t vote based on their answers</h1>
+<h2 id="training-and-testing-data">Training and testing data</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+voters_select &lt;- voters %&gt;% 
+  mutate(turnout16_2016 = factor(turnout16_2016)) %&gt;% 
+  select(-case_identifier)
+
+# loading tidymodels 
+library(tidymodels)
+library(themis)
+
+# split the data into training and testing sets
+voters_split &lt;- voters_select %&gt;% 
+  initial_split(prop = .8, stata = turnout16_2016)
+
+voters_train &lt;- training(voters_split)
+voters_test &lt;- testing(voters_split)</code></pre>
+</div>
+<p>We implement upsampling, we add more of the people who did not vote (just more of the same ones we already have) until the proportion is equal and the classes are balanced. ## Create cross-validation folds</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+vote_folds &lt;- rsample::vfold_cv(voters_train, v = 10, repeats = 5)</code></pre>
+</div>
+<h2 id="preprocess-with-a-recipe">Preprocess with a recipe</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+voters_recipe &lt;- recipe(turnout16_2016 ~ ., data = voters_train) %&gt;%
+  step_upsample(turnout16_2016)</code></pre>
+</div>
+<h2 id="creating-a-modelling-workflow">Creating a modelling workflow</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+# specify a logistic model 
+glm_spec &lt;- logistic_reg() %&gt;% 
+  set_engine(&quot;glm&quot;)
+
+vote_wf &lt;- workflow() %&gt;% 
+  add_recipe(voters_recipe) %&gt;% 
+  add_model(glm_spec)
+
+set.seed(234)
+glm_res &lt;- vote_wf %&gt;%
+  fit_resamples(
+    vote_folds, 
+    metrics = metric_set(roc_auc, sens, spec),
+    control = control_resamples(save_pred = TRUE)
+  )
+glimpse(glm_res)</code></pre>
+<pre><code>
+Rows: 50
+Columns: 6
+$ splits       &lt;list&gt; [&lt;rsplit[4818 x 536 x 5354 x 42]&gt;, &lt;rsplit[48…
+$ id           &lt;chr&gt; &quot;Repeat1&quot;, &quot;Repeat1&quot;, &quot;Repeat1&quot;, &quot;Repeat1&quot;, &quot;R…
+$ id2          &lt;chr&gt; &quot;Fold01&quot;, &quot;Fold02&quot;, &quot;Fold03&quot;, &quot;Fold04&quot;, &quot;Fold0…
+$ .metrics     &lt;list&gt; [&lt;tbl_df[3 x 3]&gt;, &lt;tbl_df[3 x 3]&gt;, &lt;tbl_df[3 …
+$ .notes       &lt;list&gt; [&lt;tbl_df[0 x 1]&gt;, &lt;tbl_df[0 x 1]&gt;, &lt;tbl_df[0 …
+$ .predictions &lt;list&gt; [&lt;tbl_df[536 x 5]&gt;, &lt;tbl_df[536 x 5]&gt;, &lt;tbl_d…</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+## specify a ranger model 
+rf_spec &lt;- rand_forest() %&gt;% 
+  set_engine(&quot;ranger&quot;) %&gt;% 
+  set_mode(&quot;classification&quot;)
+
+# Add the recipe + model to a workflow 
+
+vote_wf &lt;- workflow() %&gt;% 
+  add_recipe(voters_recipe) %&gt;% 
+  add_model(rf_spec)
+
+set.seed(234)
+rf_res &lt;- vote_wf %&gt;%
+    fit_resamples(
+        vote_folds,
+        metrics = metric_set(roc_auc, sens, spec),
+        control = control_resamples(save_pred = TRUE))
+
+glimpse(rf_res)</code></pre>
+<pre><code>
+Rows: 50
+Columns: 6
+$ splits       &lt;list&gt; [&lt;rsplit[4818 x 536 x 5354 x 42]&gt;, &lt;rsplit[48…
+$ id           &lt;chr&gt; &quot;Repeat1&quot;, &quot;Repeat1&quot;, &quot;Repeat1&quot;, &quot;Repeat1&quot;, &quot;R…
+$ id2          &lt;chr&gt; &quot;Fold01&quot;, &quot;Fold02&quot;, &quot;Fold03&quot;, &quot;Fold04&quot;, &quot;Fold0…
+$ .metrics     &lt;list&gt; [&lt;tbl_df[3 x 3]&gt;, &lt;tbl_df[3 x 3]&gt;, &lt;tbl_df[3 …
+$ .notes       &lt;list&gt; [&lt;tbl_df[0 x 1]&gt;, &lt;tbl_df[0 x 1]&gt;, &lt;tbl_df[0 …
+$ .predictions &lt;list&gt; [&lt;tbl_df[536 x 5]&gt;, &lt;tbl_df[536 x 5]&gt;, &lt;tbl_d…</code></pre>
+</div>
+<h2 id="performance-metrics-from-resampling">Performance metrics from resampling</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+collect_metrics(glm_res)</code></pre>
+<pre><code>
+# A tibble: 3 x 5
+  .metric .estimator  mean     n std_err
+  &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+1 roc_auc binary     0.719    50 0.00758
+2 sens    binary     0.640    50 0.0144 
+3 spec    binary     0.700    50 0.00296</code></pre>
+<pre class="r"><code>
+collect_metrics(rf_res)</code></pre>
+<pre><code>
+# A tibble: 3 x 5
+  .metric .estimator  mean     n   std_err
+  &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;     &lt;dbl&gt;
+1 roc_auc binary     0.740    50 0.00729  
+2 sens    binary     0        50 0        
+3 spec    binary     1.00     50 0.0000833</code></pre>
+</div>
+<h2 id="testing">Testing</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+## Final fit
+vote_final &lt;- vote_wf %&gt;%
+    last_fit(voters_split)
+
+## Confusion matrix
+vote_final %&gt;% 
+    collect_predictions() %&gt;% 
+    conf_mat(turnout16_2016, .pred_class)</code></pre>
+<pre><code>
+              Truth
+Prediction     Did not vote Voted
+  Did not vote            0     1
+  Voted                  49  1288</code></pre>
+</div>
+<!--radix_placeholder_article_footer-->
+<!--/radix_placeholder_article_footer-->
+</div>
+
+<div class="d-appendix">
+</div>
+
+
+<!--radix_placeholder_site_after_body-->
+<!--/radix_placeholder_site_after_body-->
+<!--radix_placeholder_appendices-->
+<div class="appendix-bottom"></div>
+<!--/radix_placeholder_appendices-->
+<!--radix_placeholder_navigation_after_body-->
+<!--/radix_placeholder_navigation_after_body-->
+
+</body>
+
+</html>

@@ -1,0 +1,206 @@
+---
+title: "Voter"
+description: |
+  Introduction to Cross Validation
+author:
+  - name: Thinh Tran
+    url: {}
+date: 09-12-2020
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Prerequisite
+```{r}
+library(tidyverse)
+library(gt)
+theme_set(theme_light())
+```
+
+
+# Loading the data
+```{r}
+voters <- read_csv("https://raw.githubusercontent.com/juliasilge/supervised-ML-case-studies-course/master/data/voters.csv")
+```
+
+Useful info
+
+```{r}
+tribble(~Response, ~ Code,
+        "strongly agree", 1,
+        "agree", 2,
+        "disagree", 3,
+        "strongly disagree", 4) %>% 
+  mutate(Response = str_to_title(Response)) %>% 
+  gt() %>% 
+  tab_style(
+    style = list(
+      cell_text(weight = "bold")),
+    locations = cells_column_labels(everything())
+  ) %>% 
+  opt_table_lines("default")
+```
+
+# EDA 
+
+```{r}
+voters %>% 
+  glimpse()
+```
+
+## How many people voted? 
+```{r}
+voters %>% 
+  count(turnout16_2016)
+```
+
+## How do the responses on the survey vary with voting behavior?
+
+```{r}
+voters %>%
+    group_by(turnout16_2016) %>%
+    summarise(`Elections don't matter` = mean(RIGGED_SYSTEM_1_2016 <= 2),
+              `Economy is getting better` = mean(econtrend_2016 == 1),
+              `Crime is very important` = mean(imiss_a_2016 == 2)) %>% 
+  gt() %>% 
+  tab_style(
+    style = list(
+      cell_text(weight = "bold")),
+    locations = cells_column_labels(everything())
+  ) %>% 
+  tab_options(
+    column_labels.border.top.color = "white",
+    column_labels.border.top.width = px(3),
+    column_labels.border.bottom.color = "black",
+    table_body.hlines.color = "white",
+    table.border.bottom.color = "white",
+    table.border.bottom.width = px(3)
+  ) %>% 
+  tab_spanner(
+    label = md("Survey questions"),
+    columns = 2:4) %>% 
+  cols_label(
+    turnout16_2016 = "Turnout",
+    `Elections don't matter` = "Elections don't matter",
+    `Economy is getting better` = "Economy is getting better",
+    `Crime is very important` = "Crime is very important"
+  ) %>% 
+  fmt_percent(
+    columns = 2:4
+  )
+```
+
+
+```{r}
+voters %>%
+    ggplot(aes(econtrend_2016, after_stat(density), fill = turnout16_2016)) +
+    geom_histogram(alpha = 0.5, position = "identity", binwidth = 1) +
+    labs(title = "How is the economy among the voter view?")
+```
+
+# Make a prediction on whether a person vote or don't vote based on their answers
+
+## Training and testing data
+```{r}
+voters_select <- voters %>% 
+  mutate(turnout16_2016 = factor(turnout16_2016)) %>% 
+  select(-case_identifier)
+
+# loading tidymodels 
+library(tidymodels)
+library(themis)
+
+# split the data into training and testing sets
+voters_split <- voters_select %>% 
+  initial_split(prop = .8, stata = turnout16_2016)
+
+voters_train <- training(voters_split)
+voters_test <- testing(voters_split)
+
+```
+
+We implement upsampling, we add more of the people who did not vote (just more of the same ones we already have) until the proportion is equal and the classes are balanced.
+## Create cross-validation folds
+
+```{r}
+vote_folds <- rsample::vfold_cv(voters_train, v = 10, repeats = 5)
+
+```
+
+## Preprocess with a recipe 
+```{r}
+voters_recipe <- recipe(turnout16_2016 ~ ., data = voters_train) %>%
+  step_upsample(turnout16_2016)
+
+```
+
+## Creating a modelling workflow
+
+```{r}
+# specify a logistic model 
+glm_spec <- logistic_reg() %>% 
+  set_engine("glm")
+
+vote_wf <- workflow() %>% 
+  add_recipe(voters_recipe) %>% 
+  add_model(glm_spec)
+
+set.seed(234)
+glm_res <- vote_wf %>%
+  fit_resamples(
+    vote_folds, 
+    metrics = metric_set(roc_auc, sens, spec),
+    control = control_resamples(save_pred = TRUE)
+  )
+glimpse(glm_res)
+  
+```
+
+```{r}
+## specify a ranger model 
+rf_spec <- rand_forest() %>% 
+  set_engine("ranger") %>% 
+  set_mode("classification")
+
+# Add the recipe + model to a workflow 
+
+vote_wf <- workflow() %>% 
+  add_recipe(voters_recipe) %>% 
+  add_model(rf_spec)
+
+set.seed(234)
+rf_res <- vote_wf %>%
+    fit_resamples(
+        vote_folds,
+        metrics = metric_set(roc_auc, sens, spec),
+        control = control_resamples(save_pred = TRUE))
+
+glimpse(rf_res)
+```
+
+## Performance metrics from resampling
+
+```{r}
+collect_metrics(glm_res)
+collect_metrics(rf_res)
+```
+
+
+## Testing    
+
+```{r}
+## Final fit
+vote_final <- vote_wf %>%
+    last_fit(voters_split)
+
+## Confusion matrix
+vote_final %>% 
+    collect_predictions() %>% 
+    conf_mat(turnout16_2016, .pred_class)
+```
+

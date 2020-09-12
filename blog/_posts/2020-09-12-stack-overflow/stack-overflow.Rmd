@@ -1,0 +1,192 @@
+---
+title: "Stack Overflow"
+description: |
+  In this article, we deal with the unbalanced dataset in classification. 
+author:
+  - name: Thinh Tran
+    url: {}
+date: 09-12-2020
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE,
+                      message = FALSE, dpi = 180, 
+                      fig.width = 8, fig.height = 5)
+```
+
+# Prerequisite
+```{r}
+library(tidyverse)
+theme_set(theme_light())
+```
+
+# Prepare the data 
+```{r}
+stack_overflow <- read_csv("https://raw.githubusercontent.com/juliasilge/supervised-ML-case-studies-course/master/data/stack_overflow.csv") %>% 
+  mutate(remote = factor(remote, levels = c("Remote", "Not remote"))) %>% # reorder level for consistency
+  mutate(across(where(is.character), factor)) %>%  # all char type to factor type for modelling purpose
+  mutate(across(where(is.logical), as.numeric))
+# Overview
+head(stack_overflow)
+```
+
+## EDA
+###  Dimension
+```{r}
+stack_overflow %>% 
+  glimpse()
+```
+
+
+### Distribution of some interested variables
+```{r}
+stack_overflow %>% 
+  count(remote, sort = TRUE)
+
+stack_overflow %>% 
+  count(country, sort= TRUE)
+
+stack_overflow %>% 
+  count(years_coded_job, sort = TRUE)
+
+```
+
+### Making assumption with the relationship between variables
+```{r}
+pivot_longer_stack <- stack_overflow %>% 
+  pivot_longer(data_scientist:web_developer, 
+               names_to = "job") %>%
+  filter(value == 1) %>% 
+  mutate(job = str_to_title(str_replace_all(job, "_", " "))) 
+  
+pivot_longer_stack %>% 
+  count(job, remote, sort = TRUE) %>% 
+  mutate(job = fct_reorder(job, n)) %>% 
+  ggplot(aes(job, n, fill = remote)) + 
+  geom_col() + 
+  coord_flip() + 
+  labs(
+    x = "Job Title",
+    y = "# Respondents",
+    fill = "Is Remote"
+  ) 
+```
+
+
+```{r}
+stack_overflow %>% 
+  ggplot(aes(remote, years_coded_job, fill = remote)) + 
+  geom_boxplot(alpha = .5) +
+  labs(
+    x = "",
+    y = "# Years",
+    fill = "Is Remote",
+    title = "Distribution of Professional Coding Experience Between Remote Status"
+  )
+```
+
+
+# Predict whether a respondent is working remotely or not with classification
+```{r}
+stack_overflow %>% 
+  count(remote, sort = TRUE)
+
+```
+
+There are about ten times more non-remote developers than there are remote developers. We are dealing with unbalanced datasets. 
+
+```{r}
+# load tidymodels 
+library(tidymodels)
+library(themis)
+
+# create stack_select dataset 
+stack_select <- stack_overflow %>% 
+  select(-respondent) # redundant in the model
+
+# split data into training and testing tests
+set.seed(1234)
+stack_split <- stack_select %>% 
+  initial_split(p = 0.8, stata = remote)
+
+stack_train <- training(stack_split)
+stack_test <- testing(stack_split)
+
+```
+
+
+```{r}
+# define the roles of all columns in the dataset
+stack_recipe <- recipe(remote ~ ., data = stack_train) %>% 
+  step_downsample(remote) 
+
+# pre-processing
+stack_prep <- prep(stack_recipe)
+stack_down <- juice(stack_prep)
+
+# check on the result of downsample
+stack_down %>% 
+  count(remote)
+```
+
+## Predicting remote status
+
+### Methods: Logistic Regression and Decision Tree
+
+Prepare the specification for fitting the data
+
+```{r}
+glm_spec <- parsnip::logistic_reg() %>% 
+  set_engine("glm")
+
+tree_spec <- parsnip::decision_tree() %>% 
+  set_engine("rpart") %>% 
+  set_mode("classification")
+```
+
+Build a workflow to keep tracks with the process of training model
+```{r}
+# build a workflow
+
+stack_wf <- workflow() %>% 
+  add_recipe(stack_recipe) 
+
+stack_glm <- stack_wf %>% 
+  add_model(glm_spec) %>% 
+  fit(data = stack_train)
+
+stack_tree <- stack_wf %>% 
+  add_model(tree_spec) %>% 
+  fit(data = stack_train)
+
+stack_glm 
+stack_tree
+```
+
+### Compare the results
+```{r}
+results <- stack_test %>%
+    bind_cols(predict(stack_glm, stack_test) %>%
+                  rename(.pred_glm = .pred_class)) %>%
+    bind_cols(predict(stack_tree, stack_test) %>%
+                  rename(.pred_tree = .pred_class))
+
+results %>%
+    conf_mat(truth = remote, estimate = .pred_glm)
+
+results %>%
+    conf_mat(truth = remote, estimate = .pred_tree)
+
+## Calculate accuracy
+accuracy(results, truth = remote, estimate = .pred_glm)
+accuracy(results, truth = remote, estimate = .pred_tree)
+
+## Calculate positive predict value
+ppv(results, truth = remote, estimate = .pred_glm)
+ppv(results, truth = remote, estimate = .pred_tree)
+```
+
+

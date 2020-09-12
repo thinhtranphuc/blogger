@@ -1,5 +1,37 @@
 [
   {
+    "path": "posts/2020-09-12-stack-overflow/",
+    "title": "Stack Overflow",
+    "description": "In this article, we deal with the unbalanced dataset in classification.",
+    "author": [
+      {
+        "name": "Thinh Tran",
+        "url": {}
+      }
+    ],
+    "date": "2020-09-12",
+    "categories": [],
+    "preview": "posts/2020-09-12-stack-overflow/stack-overflow_files/figure-html5/unnamed-chunk-5-1.png",
+    "last_modified": "2020-09-12T13:16:25+07:00",
+    "input_file": "stack-overflow.utf8.md"
+  },
+  {
+    "path": "posts/2020-09-12-voter/",
+    "title": "Voter",
+    "description": "Introduction to Cross Validation",
+    "author": [
+      {
+        "name": "Thinh Tran",
+        "url": {}
+      }
+    ],
+    "date": "2020-09-12",
+    "categories": [],
+    "preview": "posts/2020-09-12-voter/voter_files/figure-html5/unnamed-chunk-7-1.png",
+    "last_modified": "2020-09-12T17:42:48+07:00",
+    "input_file": "voter.utf8.md"
+  },
+  {
     "path": "posts/2020-09-05-wine-rating/",
     "title": "Wine Ratings",
     "description": "TidyTuesday Data. 2019-05-16",
