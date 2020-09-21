@@ -1,5 +1,21 @@
 [
   {
+    "path": "posts/2020-09-21-tidy-models-intro/",
+    "title": "Tidy Models Intro",
+    "description": "A short description of the post.",
+    "author": [
+      {
+        "name": "Thinh Tran",
+        "url": {}
+      }
+    ],
+    "date": "2020-09-21",
+    "categories": [],
+    "preview": "posts/2020-09-21-tidy-models-intro/tidy-models-intro_files/figure-html5/unnamed-chunk-4-1.png",
+    "last_modified": "2020-09-21T22:18:32+07:00",
+    "input_file": "tidy-models-intro.utf8.md"
+  },
+  {
     "path": "posts/2020-09-12-stack-overflow/",
     "title": "Stack Overflow",
     "description": "In this article, we deal with the unbalanced dataset in classification.",

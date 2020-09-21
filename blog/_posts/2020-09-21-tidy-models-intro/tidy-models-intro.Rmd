@@ -1,0 +1,779 @@
+---
+title: "Tidy Models Intro"
+description: |
+  A short description of the post.
+author:
+  - name: Thinh Tran
+    url: {}
+date: 09-21-2020
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Prerequisites
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(modeldata)
+theme_set(theme_light())
+```
+
+# Ames housing data 
+
+Loading the dataset
+```{r}
+data(ames)
+ames <- ames %>% janitor::clean_names()
+```
+
+## Explore important variables
+
+Start with the outcome we want to predict 
+
+
+### Sale Price 
+
+```{r}
+ames %>%
+  summarise(mean = mean(sale_price),
+            median = median(sale_price),
+            max = max(sale_price))
+```
+
+```{r}
+ames %>% 
+  ggplot(aes(sale_price)) + 
+  geom_histogram(bins = 50, alpha = .8) +
+  geom_vline(xintercept = 160000, lty = 2) + 
+  scale_x_continuous(labels = scales::dollar) +
+  labs(x = "Sale Price")
+```
+
+The data are right-skewed, There are more inexpensive houses than expensive ones. When facing with this outcome, the price should be transformed to log-scale. The advantages of doing this are no houses will be predicted with negative sales price and the errors in the predicting expensive houses will not have an excessive influence on the data
+
+```{r}
+ames %>% 
+  ggplot(aes(sale_price)) + 
+  geom_histogram(bins = 50, alpha = .8) +
+  geom_vline(xintercept = 160000, lty = 2) + 
+  scale_x_log10(labels = scales::dollar) + 
+  labs(x = "Sale Price") 
+```
+While it's not perfect but better for modelling instead of using the untransformed data. However, the drawback of transformation is related to interpretation. For examples, the RMSE is used to measure the performance of model in regression models. It uses the difference between the observed and predicted values in its calculations. It is difficult to understand by RMSE in log-scale. 
+
+However, we stick with the log-transformation due to its superior in modelling
+
+```{r}
+ames <- ames %>% 
+  mutate(sale_price = log10(sale_price))
+```
+
+### Spatial information
+
+```{r}
+ames %>% 
+  select(neighborhood, longitude, latitude)
+```
+
+
+# Spending our data 
+
+Steps to create a useful model: 
+* parameter estimation 
+* model selection 
+* tuning 
+* performance assessment 
+
+At the beginning, there is usually an initial finite pool of data for all these tasks. The question is how this data is applied to these steps? Data spending is used for this consideration. One strategy is to spend a specific subset of data to determine which predictors are informative (when the data and predictors are abundant). 
+
+## Common methods for splitting data
+
+For empirical model validation, the common approach is to split the existing pool of data into two distinct sets, training and testing sets. The *training set* is usually the majority of the data. These data are a sandbox for model building where different model can be fit, features engineering strategies are investigated. The *test set* is held in reserve until one or two models are chosen. It is used to determine the efficacy of the model. 
+
+The most common method to split is simple random sampling. 
+
+```{r}
+set.seed(123) # for reproducible purpose 
+
+# save the split information for an 80/20 split of data 
+ames_split <- initial_split(ames, prob = 0.80)
+
+# Extract the training, testing set
+ames_train <- training(ames_split)
+ames_test <- testing(ames_split)
+```
+
+Simple random sampling is doing well in many cases but not with a dramatic *class imbalance* (one class occurs much less frequently than another). Using a simple random sampe may allocate these infrequent class disproportionately. 
+
+To avoid this, *stratified sampling* can be used. The training/test split is conducted separately within each class. For regression problems, the outcome data can be binned into quartiles and then stratified sampling conducted four separate times. 
+
+The Ames housing data is right-skewed which has more inexpensive houses than expensive one. We can do the stratified random sample for 80/20 split 
+
+```{r}
+set.seed(123)
+ames_split <- initial_split(ames, prob = 0.80, strata = sale_price)
+
+# train/test sets 
+ames_train <- training(ames_split)
+ames_test <- testing(ames_split)
+
+dim(ames_train)
+```
+
+## What proportion should be used? 
+
+Highly dependent on the context of the problem in hand 
+
+## What about validation set? 
+Question: "How do we know what is the best if we don't measure performance until the test set?"
+To avoid over fitting in which the models performance well in the training set but poorly on the test set. A validation set of data were held back and used to understand how well the model performed before testing 
+
+
+## Multi-level data 
+
+The data set will have multiple rows per experimental unit. Simple resampling across rows would lead to some data within an experimental unit being in the training set and others in the test set. Data splitting should occur at the independent experimental unit level of the data
+
+
+# Features engineering with recipes
+
+Feature engineering includes the activities that reformat the predictor values to make them easier to use for a model such as transformation and encoding to best represent the characteristics of the data. 
+
+Typical preprocessing to build better features: 
+* correlation between predictors can be reduced by removing some of them
+* some predictors have missing values, they can be imputed by a sub-model 
+* the distribution of some skewed predictors can benefit from transformation 
+
+The recipe in tidymodels defines a series of steps for data processing without executing them. It's only a specification of what should be done 
+
+```{r}
+simple_ames <- ames_train %>% 
+  recipe(sale_price ~ neighborhood + gr_liv_area + year_built + bldg_type, data = .) %>% 
+  step_log(gr_liv_area, base = 10) %>%
+  step_dummy(all_nominal())
+```
+
+
+Benefit of using recipe:
+* The computations can be recycled across models 
+* Broader set of data processing choices 
+* Compact syntax 
+* All data processing in one place
+
+## Using recipes 
+
+The `recipe()` has not executed yet. The next step is to estimate any quantities required by the steps using the `prep()`.
+
+```{r}
+simple_ames <- prep(simple_ames, training = ames_train)
+simple_ames
+```
+
+The third phase is to apply the preprocessing operations to a data set using the `bake()`.
+
+```{r}
+test_ex <- bake(simple_ames, new_data = ames_test)
+test_ex
+```
+
+## Encoding qualitative data in a numeric format 
+
+* `step_unknown()`: change the missing values to a dedicated factor level 
+* `step_novel()`: allot a new level for anticipating the new factor level appear
+* `step_other()`: lump the factors, converting infrequent values to a catch-all level of "other"
+* `step_unorder()`: convert to regular factors 
+* `step_ordinalscore()`: maps specific numeric values to each factor level 
+```{r}
+ames_train %>% 
+  ggplot(aes(y = neighborhood)) + 
+  geom_bar()
+
+ames_train %>%
+  mutate(neighborhood = fct_lump_prop(neighborhood, prop = 0.01)) %>% 
+  count(neighborhood) %>% 
+  ggplot(aes(n, neighborhood)) + 
+  geom_col()
+```
+
+We can achieve this with the recipe()
+
+```{r}
+simple_ames <- recipe(sale_price ~ neighborhood + gr_liv_area + year_built + bldg_type, 
+                      data = ames_train) %>% 
+  step_log(gr_liv_area , base = 10) %>% 
+  step_other(neighborhood, threshold = 0.01) %>% 
+  step_dummy(all_nominal())
+```
+
+## Interaction terms 
+
+Interaction effects involve two or more predictors. Such an effect occurs when one predictor has an effect on the outcome that is contingent on one or more other predictors. For example, if you were trying to predict your morning commute time, two potential predictors could be the amount of traffic and the time of day. However, the relationship between commute time and the amount of traffic is different for different times of day. In this case, you could add an interaction term between the two predictors to the model along with the original two predictors (which are called the “main effects”)
+
+In the Ames training set, the general living area differ for different building types 
+
+```{r}
+ames_train %>% 
+  ggplot(aes(gr_liv_area, 10^sale_price)) + 
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  facet_wrap(~ bldg_type) + 
+  scale_x_log10() + 
+  scale_y_log10()
+```
+
+Again, we can achieve the interactions in recipe as 
+
+```{r}
+simple_ames <- 
+  recipe(sale_price ~ neighborhood + gr_liv_area + year_built + bldg_type,
+         data = ames_train) %>%
+  step_log(Gr_Liv_Area, base = 10) %>% 
+  step_other(Neighborhood, threshold = 0.01) %>% 
+  step_dummy(all_nominal()) %>% 
+  step_interact(~ gr_liv_area:start_withs("bldg_type_"))
+
+```
+
+## Feature Extraction 
+
+Another common method for representing multiple features at once is called feature extraction. It creates a new features from the predictors that capture the information in the broader set as a whole.
+
+Principal component analysis (PCA) tries to extract as much information from predictors set as possible using a smaller number of features. PCA is a linear extraction method, meaning the each new feature is a linear combination of original predictors. The PCA scores are uncorrelated with one another. PCA reduces the correlation between predictors. 
+
+We can achieve with `step_pca()` in the recipes 
+
+## Row sampling steps 
+
+* *downsampling*: keep the minority class and take a random sample of majority class so that the class are balance
+
+* *upsampling*: replicates sample from the minority class to achieve the balance classes. 
+
+
+
+## Using a recipe with traditional modelling functions 
+
+```{r}
+ames_rec <- 
+  recipe(sale_price ~ neighborhood + gr_liv_area + year_built + bldg_type + 
+           latitude + longitude, data = ames_train) %>%
+  step_log(gr_liv_area, base = 10) %>% 
+  step_other(neighborhood, threshold = 0.01) %>% 
+  step_dummy(all_nominal()) %>% 
+  step_interact( ~ gr_liv_area:starts_with("Bldg_Type_") ) %>% 
+  step_ns(latitude, longitude, deg_free = 20)
+```
+
+```{r}
+ames_rec_prep <- prep(ames_rec)
+
+ames_train_prep <- bake(ames_rec_prep, new_data = ames_train)
+ames_test_prep <- bake(ames_rec_prep, new_data = ames_test)
+
+# fit model 
+lm_fit <- lm(sale_price ~ ., data = ames_train_prep)
+
+# get the result 
+glance(lm_fit)
+
+# coefficients
+tidy(lm_fit)
+```
+
+
+```{r}
+# apply on test set
+predict(lm_fit, ames_test_prep) %>% head()
+```
+
+
+## Tidy a recipe 
+
+```{r}
+tidy(ames_rec)
+```
+
+
+## Column roles 
+Call `recipes()`, it assigns roles to each of the columns, either predictor or outcomes. However, other roles can be assigned if needed by using:
+* `add_role()`
+* `remove_role()`
+* `update_role()`
+
+
+
+
+# Fitting models with parsnip 
+
+* `parsnip` provides a fluent and standardised interface for a variety of different models.
+* reduce the memorisation of each package syntax 
+
+There are 3 steps:
+* **Specify the type of model based on its mathematical structure**: linear regression, random forrest, ... 
+* **Specify the engine for fitting model**: the software package is used 
+* **Declare the mode of the model**: regression/classification 
+
+```{r}
+lm_model <- linear_reg() %>%
+  set_engine("lm")
+
+lm_form_fit <- 
+  lm_model %>% 
+  fit(sale_price ~ longitude + latitude, data = ames_train)
+
+lm_form_fit
+```
+
+## Use the model results
+
+```{r}
+lm_form_fit %>% pluck("fit")
+```
+
+Base R result 
+
+```{r}
+lm_form_fit %>% 
+  pluck("fit") %>%
+  summary()
+```
+
+Broom
+
+```{r}
+lm_form_fit %>% 
+  pluck("fit") %>%
+  tidy()
+```
+
+
+## Make predictions 
+
+Conform the 3 rules:
+* The results are always tibble 
+* The columns are always predictable 
+* Same rows as the input data set 
+
+```{r}
+predict(lm_form_fit, new_data = ames_test)
+```
+
+```{r}
+ames_test %>% 
+  select(sale_price) %>% 
+  bind_cols(predict(lm_form_fit, new_data = ames_test)) %>% 
+  bind_cols(predict(lm_form_fit, new_data = ames_test, type = "pred_int")) # add prediction interval 
+```
+
+#s Workflow basics 
+Combine modelling and preprocessing together 
+
+```{r}
+lm_model <- 
+  linear_reg() %>% 
+  set_engine("lm")
+
+lm_workflow <- 
+  workflow() %>% 
+  add_model(lm_model) %>% 
+  add_formula(sale_price ~ longitude + latitude)
+
+# apply to fit model 
+lm_fit <- fit(lm_workflow, ames_train)
+
+# remove formula 
+lm_workflow <- lm_workflow %>% 
+  remove_formula()
+```
+
+## Workflow and Recipes 
+
+```{r}
+lm_workflow <- lm_workflow %>%
+  add_recipe(ames_rec)
+```
+
+```{r}
+# do prep(), bake(), fit() in one step 
+lm_fit <- fit(lm_workflow, ames_train)
+
+# do bake() and predict() in one step 
+predict(lm_fit, ames_test)
+```
+
+If we need an object we can use `pull` to retrieve them 
+
+```{r}
+# recipe 
+lm_fit %>% 
+  pull_workflow_prepped_recipe() %>% 
+  tidy()
+```
+
+
+```{r}
+# fit 
+lm_fit %>% 
+  pull_workflow_fit() %>% 
+  tidy()
+```
+
+
+# Judging model effectiveness
+
+## Regresssion metrics 
+
+```{r}
+ames_test_res <- predict(lm_fit, new_data = ames_test %>% select(-sale_price))
+```
+
+```{r}
+ames_test_res <- bind_cols(ames_test_res, ames_test %>% select(sale_price))
+ames_test_res
+```
+
+
+```{r}
+ames_test_res %>% 
+  ggplot(aes(sale_price, .pred)) + 
+  geom_point(alpha = 0.5) + 
+  geom_abline(lty = 2) + 
+  labs(
+    x = "Sale Price (log10)", 
+    y = "Predicted Sale Price (log10)") + 
+  coord_obs_pred()
+```
+
+Let's compute rmse 
+```{r}
+ames_test_res %>% 
+  rmse(truth = sale_price, 
+       estimate = .pred)
+```
+
+Compute multiple metrics at once 
+
+```{r}
+ames_metrics <- metric_set(rmse, rsq, mae)
+
+ames_metrics(ames_test_res ,truth = sale_price, estimate = .pred)
+
+```
+
+
+## Binary Classification metrics 
+
+```{r}
+data("two_class_example")
+str(two_class_example)
+```
+
+```{r}
+# Confusion matrix 
+two_class_example %>% 
+  conf_mat(truth = truth, estimate = predicted)
+
+# Accuracy 
+accuracy(two_class_example, truth = truth, estimate = predicted)
+
+# Matthews correlation coefficients 
+mcc(two_class_example, truth, predicted)
+
+# F1 metri 
+f_meas(two_class_example, truth, predicted)
+```
+
+There are numerous classification metrics that use the predicted probabilities as inputs rather than the hard class predictions. For example, the receiver operating characteristic (ROC) curve computes the sensitivity and specificity over a continuum of different event thresholds.
+
+```{r}
+two_class_curve <- roc_curve(two_class_example, truth, Class1)
+two_class_curve
+
+roc_auc(two_class_example, truth, Class1)
+```
+
+```{r}
+autoplot(two_class_curve)
+```
+
+
+
+# Resampling for evaluating performance 
+
+## Random Forrest 
+```{r}
+rf_model <- 
+  rand_forest(trees = 1000) %>% 
+  set_engine("ranger") %>% 
+  set_mode("regression")
+
+rf_workflow <- workflow() %>% 
+  add_formula(
+    sale_price ~ neighborhood + gr_liv_area + year_built + bldg_type + latitude + longitude
+  ) %>% 
+  add_model(rf_model)
+```
+
+```{r}
+rf_fit <- fit(rf_workflow, data = ames_train)
+```
+
+```{r}
+estimate_perf <- function(model, dat ){
+  ames_metrics <- metric_set(rmse, rsq)
+  
+  predict(model, dat) %>% 
+    bind_cols(dat %>% select(sale_price)) %>%
+    ames_metrics(truth = sale_price, estimate = .pred)
+}
+```
+
+```{r}
+estimate_perf(rf_fit, ames_train)
+estimate_perf(lm_fit, ames_train)
+```
+
+```{r}
+# test set
+estimate_perf(rf_fit, ames_test)
+estimate_perf(lm_fit, ames_test)
+  
+```
+
+The performance of random forest in test set is much worse than training set 
+If the test set should not be used immediately, and re-predicting the training set is a bad idea, what should be done? **Resampling methods**, such as cross-validation or validation sets, are the solution.
+
+
+## Resampling methods
+
+**Resampling is only conducted on the training set** 
+* the model is fit with the **analysis set**
+* the model is evaluated with the **assessment set**
+
+Suppose twenty iterations of resampling are conducted. This means that twenty separate models are fit on the analysis sets and the corresponding assessment sets produce twenty sets of performance statistics. The final estimate of performance for a model is the average of the twenty replicates of the statistics
+
+
+
+### Cross-Validation 
+While there are a number of variations, the most common cross-validation method is V-fold cross-validation. The data are randomly partitioned into V sets of roughly equal size (called the “folds”).
+
+For 3-fold cross-validation, each iteration, one fold is held out for assessment statistics and the remaining folds are substrate for the model. This process continues for each fold so that three models produce three sets of performance statistics.
+
+
+```{r}
+set.seed(55)
+ames_folds <- vfold_cv(ames_train, v = 10)
+ames_folds
+```
+
+#### Repeated Cross-Validation 
+There are a variety of variations on cross-validation. The most important is repeated V-fold cross-validation. Depending on the size or other characteristics of the data, the resampling estimate produced by V-fold cross-validation may be excessively noisy. As with many statistical problems, one way to reduce noise is to gather more data. For cross-validation, this means averaging more than V statistics.
+
+To create R repeats of V-fold cross-validation, the same fold generation process is done R times to generate R collections of V partitions. Now, instead of averaging V statistics, VxR statistics produce the final resampling estimate. Due to the Central Limit Theorem, the summary statistics from each model tend toward a normal distribution.
+
+```{r}
+vfold_cv(ames_train, v = 10, repeats = 5)
+```
+
+#### Leave-one-out cross validation 
+V is the number of data points in the training set. If there are n training set samples, n models are fit using n -1 rows of the training set
+
+LOO is computationally excessive and it may not have good statistical properties
+
+#### Monte Carlo Cross Validation 
+Like V-fold cross-validation, it allocates a fixed proportion of data to the assessment sets. The difference is that, for MCCV, this proportion of the data is randomly selected each time
+
+### Validation Sets 
+
+```{r}
+set.seed(12)
+val_set <- validation_split(ames_train, prop = 3/4)
+val_set
+```
+
+
+### Bootstrapping 
+A bootstrap sample of the training set is a sample that is the same size as the training set but is drawn with replacement. 
+
+Each data point has a 63.2% chance of inclusion in the training set at least once. The assessment set contains all of the training set samples that were not selected for the analysis set (on average, with 36.8% of the training set). When bootstrapping, the assessment set is often called the “out-of-bag” sample
+
+
+```{r}
+bootstraps(ames_train, times = 5)
+```
+
+### Rolling Forecasting Origin Resampling 
+
+When the data have a strong time component, a resampling method should support modeling to estimate seasonal and other temporal trends within the data
+
+
+## Estimating performance 
+```{r}
+keep_pred <- control_resamples(save_pred = TRUE)
+
+set.seed(130)
+rf_res <- 
+  rf_workflow %>% 
+  fit_resamples(resamples = ames_folds, control = keep_pred)
+
+rf_res
+```
+
+```{r}
+# metrics for each example 
+collect_metrics(rf_res, summarize = FALSE)
+
+# average 
+collect_metrics(rf_res)
+```
+
+```{r}
+# collect predictions 
+assess_res <- collect_predictions(rf_res)
+assess_res
+```
+
+```{r}
+assess_res %>% 
+  ggplot(aes(sale_price, .pred)) + 
+  geom_point(alpha = 0.15) + 
+  geom_abline(col = "red") + 
+  coord_obs_pred() + 
+  labs(
+    x = "Sales Price",
+    y = "Predicted Sale Price"
+  )
+```
+There was one house in the training set with a low observed sale price that is significantly overpredicted by the model. Which house was that?
+
+```{r}
+over_predicted <- assess_res %>% 
+  mutate(residual = sale_price - .pred) %>% 
+  arrange(desc(abs(residual))) %>% 
+  slice(1)
+
+ames_train %>% 
+  slice(over_predicted$.row) %>% 
+  select(gr_liv_area, neighborhood, year_built, bedroom_abv_gr, full_bath)
+```
+
+## Parallel Processing 
+
+Train multiple model simultaneously 
+```{r}
+# The number of physical cores 
+parallel::detectCores(logical = TRUE)
+```
+
+
+# Resampled performance statistics 
+
+```{r}
+lm_with_splines_res <- 
+  lm_workflow %>% 
+  fit_resamples(resamples = ames_folds, control = keep_pred)
+```
+
+```{r}
+no_spline_rec <- 
+  recipe(sale_price ~ neighborhood + gr_liv_area + year_built + bldg_type + 
+           latitude + longitude, data = ames_train) %>%
+  # Recall that Sale_Price is pre-logged
+  step_log(gr_liv_area, base = 10) %>% 
+  step_other(neighborhood, threshold = 0.01) %>% 
+  step_dummy(all_nominal()) %>% 
+  step_interact( ~ gr_liv_area:starts_with("Bldg_Type_") ) 
+
+lm_no_splines_res <- lm_workflow %>%
+  remove_recipe() %>% 
+  add_recipe(no_spline_rec) %>%
+  fit_resamples(resamples = ames_folds, control = keep_pred)
+
+```
+
+```{r}
+collect_metrics(lm_with_splines_res)
+collect_metrics(lm_no_splines_res)
+```
+
+Considering these results, it appears that the additional terms do not profoundly improve the mean RMSE or R2 statistics. The difference is small, but it might be larger than the experimental noise in the system, i.e., considered statistically significant. We can formally test the hypothesis that the additional terms increase R2.
+
+```{r}
+no_splines_rsq <- 
+  collect_metrics(lm_no_splines_res, summarize = FALSE) %>% 
+  filter(.metric == "rsq") %>% 
+  select(id, `no splines` = .estimate)
+```
+
+```{r}
+splines_rsq <- 
+  collect_metrics(lm_with_splines_res, summarize = FALSE) %>% 
+  filter(.metric == "rsq") %>% 
+  select(id, `with splines` = .estimate)
+```
+
+```{r}
+rf_rsq <- 
+  collect_metrics(rf_res, summarize = FALSE) %>% 
+  filter(.metric == "rsq") %>% 
+  select(id, `random forest` = .estimate)
+```
+
+```{r}
+rsq_estimate <- no_splines_rsq %>% 
+  inner_join(splines_rsq, by = "id") %>% 
+  inner_join(rf_rsq, by = "id")
+```
+
+```{r}
+corrr::correlate(rsq_estimate %>% select(-id))
+```
+
+```{r}
+rsq_estimate %>% 
+  pivot_longer(cols = c(-id), names_to = "model", values_to = "rsq") %>% 
+  mutate(model = reorder(model, rsq)) %>% 
+  ggplot(aes(model, rsq, group = id, colour = id)) + 
+  geom_line(alpha = 0.5, lwd = 1.25) + 
+  theme(legend.position = "none") + 
+  labs(
+    x = NULL,
+    y = expression(paste(R^2, "statistics")))
+```
+
+```{r}
+rsq_estimate %>% 
+  with( cor.test(`no splines`, `random forest`) ) %>% 
+  tidy() %>% 
+  select(estimate, starts_with("conf"))
+```
+
+## Simple hypothesis testing 
+
+```{r}
+compare_lm <- rsq_estimate %>% 
+  mutate(difference = `with splines` - `no splines`)
+
+lm(difference ~ 1, data = compare_lm) %>% 
+  tidy(conf.int = TRUE) %>% 
+  select(estimate, p.value, starts_with("conf"))
+```
+
+Alternatively 
+```{r}
+rsq_estimate %>% 
+  with(t.test(`with splines`, `no splines`, paired = TRUE)) %>% 
+  tidy() %>% 
+  select(estimate, p.value, starts_with("conf"))
+```
+
+
+## Bayesian methods 
+
+```{r}
+
+```
+

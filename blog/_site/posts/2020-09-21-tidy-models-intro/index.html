@@ -1,0 +1,2447 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+  <meta name="generator" content="distill" />
+
+  <style type="text/css">
+  /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
+  body {
+    visibility: hidden;
+  }
+  </style>
+
+ <!--radix_placeholder_import_source-->
+ <!--/radix_placeholder_import_source-->
+
+  <!--radix_placeholder_meta_tags-->
+<title>Data Roasts: Tidy Models Intro</title>
+
+<meta property="description" itemprop="description" content="A short description of the post."/>
+
+
+<!--  https://schema.org/Article -->
+<meta property="article:published" itemprop="datePublished" content="2020-09-21"/>
+<meta property="article:created" itemprop="dateCreated" content="2020-09-21"/>
+<meta name="article:author" content="Thinh Tran"/>
+
+<!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
+<meta property="og:title" content="Data Roasts: Tidy Models Intro"/>
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="A short description of the post."/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:site_name" content="Data Roasts"/>
+
+<!--  https://dev.twitter.com/cards/types/summary -->
+<meta property="twitter:card" content="summary"/>
+<meta property="twitter:title" content="Data Roasts: Tidy Models Intro"/>
+<meta property="twitter:description" content="A short description of the post."/>
+
+<!--/radix_placeholder_meta_tags-->
+  <!--radix_placeholder_rmarkdown_metadata-->
+
+<script type="text/json" id="radix-rmarkdown-metadata">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Tidy Models Intro"]},{"type":"character","attributes":{},"value":["A short description of the post."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Thinh Tran"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":[]}},"value":[]}]}]},{"type":"character","attributes":{},"value":["09-21-2020"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
+</script>
+<!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["tidy-models-intro_files/figure-html5/unnamed-chunk-13-1.png","tidy-models-intro_files/figure-html5/unnamed-chunk-13-2.png","tidy-models-intro_files/figure-html5/unnamed-chunk-15-1.png","tidy-models-intro_files/figure-html5/unnamed-chunk-34-1.png","tidy-models-intro_files/figure-html5/unnamed-chunk-4-1.png","tidy-models-intro_files/figure-html5/unnamed-chunk-40-1.png","tidy-models-intro_files/figure-html5/unnamed-chunk-5-1.png","tidy-models-intro_files/figure-html5/unnamed-chunk-53-1.png","tidy-models-intro_files/figure-html5/unnamed-chunk-64-1.png"]}
+  </script>
+  <!--radix_placeholder_navigation_in_header-->
+
+<script type="application/javascript">
+
+  window.headroom_prevent_pin = false;
+
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+
+    // initialize headroom for banner
+    var header = $('header').get(0);
+    var headerHeight = header.offsetHeight;
+    var headroom = new Headroom(header, {
+      onPin : function() {
+        if (window.headroom_prevent_pin) {
+          window.headroom_prevent_pin = false;
+          headroom.unpin();
+        }
+      }
+    });
+    headroom.init();
+    if(window.location.hash)
+      headroom.unpin();
+    $(header).addClass('headroom--transition');
+
+    // offset scroll location for banner on hash change
+    // (see: https://github.com/WickyNilliams/headroom.js/issues/38)
+    window.addEventListener("hashchange", function(event) {
+      window.scrollTo(0, window.pageYOffset - (headerHeight + 25));
+    });
+
+    // responsive menu
+    $('.distill-site-header').each(function(i, val) {
+      var topnav = $(this);
+      var toggle = topnav.find('.nav-toggle');
+      toggle.on('click', function() {
+        topnav.toggleClass('responsive');
+      });
+    });
+
+    // nav dropdowns
+    $('.nav-dropbtn').click(function(e) {
+      $(this).next('.nav-dropdown-content').toggleClass('nav-dropdown-active');
+      $(this).parent().siblings('.nav-dropdown')
+         .children('.nav-dropdown-content').removeClass('nav-dropdown-active');
+    });
+    $("body").click(function(e){
+      $('.nav-dropdown-content').removeClass('nav-dropdown-active');
+    });
+    $(".nav-dropdown").click(function(e){
+      e.stopPropagation();
+    });
+  });
+</script>
+
+<style type="text/css">
+
+/* Theme (user-documented overrideables for nav appearance) */
+
+.distill-site-nav {
+  color: rgba(255, 255, 255, 0.8);
+  background-color: #455a64;
+  font-size: 15px;
+  font-weight: 300;
+}
+
+.distill-site-nav a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.distill-site-nav a:hover {
+  color: white;
+}
+
+@media print {
+  .distill-site-nav {
+    display: none;
+  }
+}
+
+.distill-site-header {
+
+}
+
+.distill-site-footer {
+
+}
+
+
+/* Site Header */
+
+.distill-site-header {
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 3;
+}
+
+.distill-site-header .nav-left {
+  display: inline-block;
+  margin-left: 8px;
+}
+
+@media screen and (max-width: 768px) {
+  .distill-site-header .nav-left {
+    margin-left: 0;
+  }
+}
+
+
+.distill-site-header .nav-right {
+  float: right;
+  margin-right: 8px;
+}
+
+.distill-site-header a,
+.distill-site-header .title {
+  display: inline-block;
+  text-align: center;
+  padding: 14px 10px 14px 10px;
+}
+
+.distill-site-header .title {
+  font-size: 18px;
+}
+
+.distill-site-header .logo {
+  padding: 0;
+}
+
+.distill-site-header .logo img {
+  display: none;
+  max-height: 20px;
+  width: auto;
+  margin-bottom: -4px;
+}
+
+.distill-site-header .nav-image img {
+  max-height: 18px;
+  width: auto;
+  display: inline-block;
+  margin-bottom: -3px;
+}
+
+
+
+@media screen and (min-width: 1000px) {
+  .distill-site-header .logo img {
+    display: inline-block;
+  }
+  .distill-site-header .nav-left {
+    margin-left: 20px;
+  }
+  .distill-site-header .nav-right {
+    margin-right: 20px;
+  }
+  .distill-site-header .title {
+    padding-left: 12px;
+  }
+}
+
+
+.distill-site-header .nav-toggle {
+  display: none;
+}
+
+.nav-dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+.nav-dropdown .nav-dropbtn {
+  border: none;
+  outline: none;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 16px 10px;
+  background-color: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+  margin-top: 1px;
+  z-index: 2;
+}
+
+.nav-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 200px;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 4px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+  z-index: 1;
+  margin-top: 2px;
+  white-space: nowrap;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.nav-dropdown-content hr {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.nav-dropdown-active {
+  display: block;
+}
+
+.nav-dropdown-content a, .nav-dropdown-content .nav-dropdown-header {
+  color: black;
+  padding: 6px 24px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.nav-dropdown-content .nav-dropdown-header {
+  display: block;
+  padding: 5px 24px;
+  padding-bottom: 0;
+  text-transform: uppercase;
+  font-size: 14px;
+  color: #999999;
+  white-space: nowrap;
+}
+
+.nav-dropdown:hover .nav-dropbtn {
+  color: white;
+}
+
+.nav-dropdown-content a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.nav-right .nav-dropdown-content {
+  margin-left: -45%;
+  right: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .distill-site-header a, .distill-site-header .nav-dropdown  {display: none;}
+  .distill-site-header a.nav-toggle {
+    float: right;
+    display: block;
+  }
+  .distill-site-header .title {
+    margin-left: 0;
+  }
+  .distill-site-header .nav-right {
+    margin-right: 0;
+  }
+  .distill-site-header {
+    overflow: hidden;
+  }
+  .nav-right .nav-dropdown-content {
+    margin-left: 0;
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+  .distill-site-header.responsive {position: relative;}
+  .distill-site-header.responsive a.nav-toggle {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .distill-site-header.responsive a,
+  .distill-site-header.responsive .nav-dropdown {
+    display: block;
+    text-align: left;
+  }
+  .distill-site-header.responsive .nav-left,
+  .distill-site-header.responsive .nav-right {
+    width: 100%;
+  }
+  .distill-site-header.responsive .nav-dropdown {float: none;}
+  .distill-site-header.responsive .nav-dropdown-content {position: relative;}
+  .distill-site-header.responsive .nav-dropdown .nav-dropbtn {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+}
+
+/* Site Footer */
+
+.distill-site-footer {
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  z-index: 3;
+  margin-top: 30px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  text-align: center;
+}
+
+/* Headroom */
+
+d-title {
+  padding-top: 6rem;
+}
+
+@media print {
+  d-title {
+    padding-top: 4rem;
+  }
+}
+
+.headroom {
+  z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.headroom--transition {
+  transition: all .4s ease-in-out;
+}
+
+.headroom--unpinned {
+  top: -100px;
+}
+
+.headroom--pinned {
+  top: 0;
+}
+
+</style>
+
+<link href="../../site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
+<link href="../../site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
+<script src="../../site_libs/headroom-0.9.4/headroom.min.js"></script>
+<!--/radix_placeholder_navigation_in_header-->
+  <!--radix_placeholder_distill-->
+
+<style type="text/css">
+
+body {
+  background-color: white;
+}
+
+.pandoc-table {
+  width: 100%;
+}
+
+.pandoc-table>caption {
+  margin-bottom: 10px;
+}
+
+.pandoc-table th:not([align]) {
+  text-align: left;
+}
+
+.pagedtable-footer {
+  font-size: 15px;
+}
+
+.html-widget {
+  margin-bottom: 2.0em;
+}
+
+.l-screen-inset {
+  padding-right: 16px;
+}
+
+.l-screen .caption {
+  margin-left: 10px;
+}
+
+.shaded {
+  background: rgb(247, 247, 247);
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.shaded .html-widget {
+  margin-bottom: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.shaded .shaded-content {
+  background: white;
+}
+
+.text-output {
+  margin-top: 0;
+  line-height: 1.5em;
+}
+
+.hidden {
+  display: none !important;
+}
+
+d-article {
+  padding-bottom: 30px;
+}
+
+d-appendix {
+  padding-top: 30px;
+}
+
+d-article>p>img {
+  width: 100%;
+}
+
+d-article iframe {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 2.0em;
+  width: 100%;
+}
+
+figure img.external {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+/* CSS for table of contents */
+
+.d-toc {
+  color: rgba(0,0,0,0.8);
+  font-size: 0.8em;
+  line-height: 1em;
+}
+
+.d-toc-header {
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 1.3em;
+}
+
+.d-toc a {
+  border-bottom: none;
+}
+
+.d-toc ul {
+  padding-left: 0;
+}
+
+.d-toc li>ul {
+  padding-top: 0.8em;
+  padding-left: 16px;
+  margin-bottom: 0.6em;
+}
+
+.d-toc ul,
+.d-toc li {
+  list-style-type: none;
+}
+
+.d-toc li {
+  margin-bottom: 0.9em;
+}
+
+.d-toc-separator {
+  margin-top: 20px;
+  margin-bottom: 2em;
+}
+
+.d-article-with-toc {
+  border-top: none;
+  padding-top: 0;
+}
+
+
+
+/* Tweak code blocks (note that this CSS is repeated above in an injection
+   into the d-code shadow dom) */
+
+d-code {
+  overflow-x: auto !important;
+}
+
+pre.d-code code.d-code {
+  padding-left: 10px;
+  font-size: 12px;
+  border-left: 2px solid rgba(0,0,0,0.1);
+}
+
+pre.text-output {
+
+  font-size: 12px;
+  color: black;
+  background: none;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+@media(min-width: 768px) {
+
+d-code {
+  overflow-x: visible !important;
+}
+
+pre.d-code code.d-code  {
+    padding-left: 18px;
+    font-size: 14px;
+}
+pre.text-output {
+  font-size: 14px;
+}
+}
+
+/* Figure */
+
+.figure {
+  position: relative;
+  margin-bottom: 2.5em;
+  margin-top: 1.5em;
+}
+
+.figure img {
+  width: 100%;
+}
+
+.figure .caption {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 12px;
+  line-height: 1.5em;
+}
+
+.figure img.external {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.figure .caption a {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.figure .caption b,
+.figure .caption strong, {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 1.0);
+}
+
+
+
+/* Tweak 1000px media break to show more text */
+
+@media(min-width: 1000px) {
+  .base-grid,
+  distill-header,
+  d-title,
+  d-abstract,
+  d-article,
+  d-appendix,
+  distill-appendix,
+  d-byline,
+  d-footnote-list,
+  d-citation-list,
+  distill-footer {
+    grid-template-columns: [screen-start] 1fr [page-start kicker-start] 80px [middle-start] 50px [text-start kicker-end] 65px 65px 65px 65px 65px 65px 65px 65px [text-end gutter-start] 65px [middle-end] 65px [page-end gutter-end] 1fr [screen-end];
+    grid-column-gap: 16px;
+  }
+
+  .grid {
+    grid-column-gap: 16px;
+  }
+
+  d-article {
+    font-size: 1.06rem;
+    line-height: 1.7em;
+  }
+  figure .caption, .figure .caption, figure figcaption {
+    font-size: 13px;
+  }
+}
+
+@media(min-width: 1180px) {
+  .base-grid,
+  distill-header,
+  d-title,
+  d-abstract,
+  d-article,
+  d-appendix,
+  distill-appendix,
+  d-byline,
+  d-footnote-list,
+  d-citation-list,
+  distill-footer {
+    grid-template-columns: [screen-start] 1fr [page-start kicker-start] 60px [middle-start] 60px [text-start kicker-end] 60px 60px 60px 60px 60px 60px 60px 60px [text-end gutter-start] 60px [middle-end] 60px [page-end gutter-end] 1fr [screen-end];
+    grid-column-gap: 32px;
+  }
+
+  .grid {
+    grid-column-gap: 32px;
+  }
+}
+
+
+/* Get the citation styles for the appendix (not auto-injected on render since
+   we do our own rendering of the citation appendix) */
+
+d-appendix .citation-appendix,
+.d-appendix .citation-appendix {
+  font-size: 11px;
+  line-height: 15px;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  padding-left: 18px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.02);
+  padding: 10px 18px;
+  border-radius: 3px;
+  color: rgba(150, 150, 150, 1);
+  overflow: hidden;
+  margin-top: -12px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+
+/* Social footer */
+
+.social_footer {
+  margin-top: 30px;
+  margin-bottom: 0;
+  color: rgba(0,0,0,0.67);
+}
+
+.disqus-comments {
+  margin-right: 30px;
+}
+
+.disqus-comment-count {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+#disqus_thread {
+  margin-top: 30px;
+}
+
+.article-sharing a {
+  border-bottom: none;
+  margin-right: 8px;
+}
+
+.article-sharing a:hover {
+  border-bottom: none;
+}
+
+.sidebar-section.subscribe {
+  font-size: 12px;
+  line-height: 1.6em;
+}
+
+.subscribe p {
+  margin-bottom: 0.5em;
+}
+
+
+.article-footer .subscribe {
+  font-size: 15px;
+  margin-top: 45px;
+}
+
+
+.sidebar-section.custom {
+  font-size: 12px;
+  line-height: 1.6em;
+}
+
+.custom p {
+  margin-bottom: 0.5em;
+}
+
+
+/* Improve display for browsers without grid (IE/Edge <= 15) */
+
+.downlevel {
+  line-height: 1.6em;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+}
+
+.downlevel .d-title {
+  padding-top: 6rem;
+  padding-bottom: 1.5rem;
+}
+
+.downlevel .d-title h1 {
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 1.1em;
+  margin: 0 0 0.5rem;
+}
+
+.downlevel .d-title p {
+  font-weight: 300;
+  font-size: 1.2rem;
+  line-height: 1.55em;
+  margin-top: 0;
+}
+
+.downlevel .d-byline {
+  padding-top: 0.8em;
+  padding-bottom: 0.8em;
+  font-size: 0.8rem;
+  line-height: 1.8em;
+}
+
+.downlevel .section-separator {
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.downlevel .d-article {
+  font-size: 1.06rem;
+  line-height: 1.7em;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+}
+
+
+.downlevel .d-appendix {
+  padding-left: 0;
+  padding-right: 0;
+  max-width: none;
+  font-size: 0.8em;
+  line-height: 1.7em;
+  margin-bottom: 0;
+  color: rgba(0,0,0,0.5);
+  padding-top: 40px;
+  padding-bottom: 48px;
+}
+
+.downlevel .footnotes ol {
+  padding-left: 13px;
+}
+
+.downlevel .base-grid,
+.downlevel .distill-header,
+.downlevel .d-title,
+.downlevel .d-abstract,
+.downlevel .d-article,
+.downlevel .d-appendix,
+.downlevel .distill-appendix,
+.downlevel .d-byline,
+.downlevel .d-footnote-list,
+.downlevel .d-citation-list,
+.downlevel .distill-footer,
+.downlevel .appendix-bottom,
+.downlevel .posts-container {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+@media(min-width: 768px) {
+  .downlevel .base-grid,
+  .downlevel .distill-header,
+  .downlevel .d-title,
+  .downlevel .d-abstract,
+  .downlevel .d-article,
+  .downlevel .d-appendix,
+  .downlevel .distill-appendix,
+  .downlevel .d-byline,
+  .downlevel .d-footnote-list,
+  .downlevel .d-citation-list,
+  .downlevel .distill-footer,
+  .downlevel .appendix-bottom,
+  .downlevel .posts-container {
+  padding-left: 150px;
+  padding-right: 150px;
+  max-width: 900px;
+}
+}
+
+.downlevel pre code {
+  display: block;
+  border-left: 2px solid rgba(0, 0, 0, .1);
+  padding: 0 0 0 20px;
+  font-size: 14px;
+}
+
+.downlevel code, .downlevel pre {
+  color: black;
+  background: none;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+</style>
+
+<script type="application/javascript">
+
+function is_downlevel_browser() {
+  if (bowser.isUnsupportedBrowser({ msie: "12", msedge: "16"},
+                                 window.navigator.userAgent)) {
+    return true;
+  } else {
+    return window.load_distill_framework === undefined;
+  }
+}
+
+// show body when load is complete
+function on_load_complete() {
+
+  // set body to visible
+  document.body.style.visibility = 'visible';
+
+  // force redraw for leaflet widgets
+  if (window.HTMLWidgets) {
+    var maps = window.HTMLWidgets.findAll(".leaflet");
+    $.each(maps, function(i, el) {
+      var map = this.getMap();
+      map.invalidateSize();
+      map.eachLayer(function(layer) {
+        if (layer instanceof L.TileLayer)
+          layer.redraw();
+      });
+    });
+  }
+
+  // trigger 'shown' so htmlwidgets resize
+  $('d-article').trigger('shown');
+}
+
+function init_distill() {
+
+  init_common();
+
+  // create front matter
+  var front_matter = $('<d-front-matter></d-front-matter>');
+  $('#distill-front-matter').wrap(front_matter);
+
+  // create d-title
+  $('.d-title').changeElementType('d-title');
+
+  // create d-byline
+  var byline = $('<d-byline></d-byline>');
+  $('.d-byline').replaceWith(byline);
+
+  // create d-article
+  var article = $('<d-article></d-article>');
+  $('.d-article').wrap(article).children().unwrap();
+
+  // move posts container into article
+  $('.posts-container').appendTo($('d-article'));
+
+  // create d-appendix
+  $('.d-appendix').changeElementType('d-appendix');
+
+  // create d-bibliography
+  var bibliography = $('<d-bibliography></d-bibliography>');
+  $('#distill-bibliography').wrap(bibliography);
+
+  // flag indicating that we have appendix items
+  var appendix = $('.appendix-bottom').children('h3').length > 0;
+
+  // replace citations with <d-cite>
+  $('.citation').each(function(i, val) {
+    appendix = true;
+    var cites = $(this).attr('data-cites').split(" ");
+    var dt_cite = $('<d-cite></d-cite>');
+    dt_cite.attr('key', cites.join());
+    $(this).replaceWith(dt_cite);
+  });
+  // remove refs
+  $('#refs').remove();
+
+  // replace footnotes with <d-footnote>
+  $('.footnote-ref').each(function(i, val) {
+    appendix = true;
+    var href = $(this).attr('href');
+    var id = href.replace('#', '');
+    var fn = $('#' + id);
+    var fn_p = $('#' + id + '>p');
+    fn_p.find('.footnote-back').remove();
+    var text = fn_p.html();
+    var dtfn = $('<d-footnote></d-footnote>');
+    dtfn.html(text);
+    $(this).replaceWith(dtfn);
+  });
+  // remove footnotes
+  $('.footnotes').remove();
+
+  $('h1.appendix, h2.appendix').each(function(i, val) {
+    $(this).changeElementType('h3');
+  });
+  $('h3.appendix').each(function(i, val) {
+    var id = $(this).attr('id');
+    $('.d-toc a[href="#' + id + '"]').parent().remove();
+    appendix = true;
+    $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('d-appendix'));
+  });
+
+  // show d-appendix if we have appendix content
+  $("d-appendix").css('display', appendix ? 'grid' : 'none');
+
+  // replace code blocks with d-code
+  $('pre>code').each(function(i, val) {
+    var code = $(this);
+    var pre = code.parent();
+    var clz = "";
+    var language = pre.attr('class');
+    if (language) {
+      // map unknown languages to "clike" (without this they just dissapear)
+      if ($.inArray(language, ["bash", "clike", "css", "go", "html",
+                               "javascript", "js", "julia", "lua", "markdown",
+                               "markup", "mathml", "python", "svg", "xml"]) == -1)
+        language = "clike";
+      language = ' language="' + language + '"';
+      var dt_code = $('<d-code block' + language + clz + '></d-code>');
+      dt_code.text(code.text());
+      pre.replaceWith(dt_code);
+    } else {
+      code.addClass('text-output').unwrap().changeElementType('pre');
+    }
+  });
+
+  // localize layout chunks to just output
+  $('.layout-chunk').each(function(i, val) {
+
+    // capture layout
+    var layout = $(this).attr('data-layout');
+
+    // apply layout to markdown level block elements
+    var elements = $(this).children().not('d-code, pre.text-output, script');
+    elements.each(function(i, el) {
+      var layout_div = $('<div class="' + layout + '"></div>');
+      if (layout_div.hasClass('shaded')) {
+        var shaded_content = $('<div class="shaded-content"></div>');
+        $(this).wrap(shaded_content);
+        $(this).parent().wrap(layout_div);
+      } else {
+        $(this).wrap(layout_div);
+      }
+    });
+
+
+    // unwrap the layout-chunk div
+    $(this).children().unwrap();
+  });
+
+  // load distill framework
+  load_distill_framework();
+
+  // wait for window.distillRunlevel == 4 to do post processing
+  function distill_post_process() {
+
+    if (!window.distillRunlevel || window.distillRunlevel < 4)
+      return;
+
+    // hide author/affiliations entirely if we have no authors
+    var front_matter = JSON.parse($("#distill-front-matter").html());
+    var have_authors = front_matter.authors && front_matter.authors.length > 0;
+    if (!have_authors)
+      $('d-byline').addClass('hidden');
+
+    // table of contents
+    if (have_authors) // adjust border if we are in authors
+      $('.d-toc').parent().addClass('d-article-with-toc');
+
+    // strip links that point to #
+    $('.authors-affiliations').find('a[href="#"]').removeAttr('href');
+
+    // hide elements of author/affiliations grid that have no value
+    function hide_byline_column(caption) {
+      $('d-byline').find('h3:contains("' + caption + '")').parent().css('visibility', 'hidden');
+    }
+
+    // affiliations
+    var have_affiliations = false;
+    for (var i = 0; i<front_matter.authors.length; ++i) {
+      var author = front_matter.authors[i];
+      if (author.affiliation !== "&nbsp;") {
+        have_affiliations = true;
+        break;
+      }
+    }
+    if (!have_affiliations)
+      $('d-byline').find('h3:contains("Affiliations")').css('visibility', 'hidden');
+
+    // published date
+    if (!front_matter.publishedDate)
+      hide_byline_column("Published");
+
+    // document object identifier
+    var doi = $('d-byline').find('h3:contains("DOI")');
+    var doi_p = doi.next().empty();
+    if (!front_matter.doi) {
+      // if we have a citation and valid citationText then link to that
+      if ($('#citation').length > 0 && front_matter.citationText) {
+        doi.html('Citation');
+        $('<a href="#citation"></a>')
+          .text(front_matter.citationText)
+          .appendTo(doi_p);
+      } else {
+        hide_byline_column("DOI");
+      }
+    } else {
+      $('<a></a>')
+         .attr('href', "https://doi.org/" + front_matter.doi)
+         .html(front_matter.doi)
+         .appendTo(doi_p);
+    }
+
+     // change plural form of authors/affiliations
+    if (front_matter.authors.length === 1) {
+      var grid = $('.authors-affiliations');
+      grid.children('h3:contains("Authors")').text('Author');
+      grid.children('h3:contains("Affiliations")').text('Affiliation');
+    }
+
+    // inject pre code styles (can't do this with a global stylesheet b/c a shadow root is used)
+    $('d-code').each(function(i, val) {
+      var style = document.createElement('style');
+      style.innerHTML = 'pre code { padding-left: 10px; font-size: 12px; border-left: 2px solid rgba(0,0,0,0.1); } ' +
+                        '@media(min-width: 768px) { pre code { padding-left: 18px; font-size: 14px; } }';
+      if (this.shadowRoot)
+        this.shadowRoot.appendChild(style);
+    });
+
+    // move appendix-bottom entries to the bottom
+    $('.appendix-bottom').appendTo('d-appendix').children().unwrap();
+    $('.appendix-bottom').remove();
+
+    // clear polling timer
+    clearInterval(tid);
+
+    // show body now that everything is ready
+    on_load_complete();
+  }
+
+  var tid = setInterval(distill_post_process, 50);
+  distill_post_process();
+
+}
+
+function init_downlevel() {
+
+  init_common();
+
+   // insert hr after d-title
+  $('.d-title').after($('<hr class="section-separator"/>'));
+
+  // check if we have authors
+  var front_matter = JSON.parse($("#distill-front-matter").html());
+  var have_authors = front_matter.authors && front_matter.authors.length > 0;
+
+  // manage byline/border
+  if (!have_authors)
+    $('.d-byline').remove();
+  $('.d-byline').after($('<hr class="section-separator"/>'));
+  $('.d-byline a').remove();
+
+  // remove toc
+  $('.d-toc-header').remove();
+  $('.d-toc').remove();
+  $('.d-toc-separator').remove();
+
+  // move appendix elements
+  $('h1.appendix, h2.appendix').each(function(i, val) {
+    $(this).changeElementType('h3');
+  });
+  $('h3.appendix').each(function(i, val) {
+    $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('.d-appendix'));
+  });
+
+
+  // inject headers into references and footnotes
+  var refs_header = $('<h3></h3>');
+  refs_header.text('References');
+  $('#refs').prepend(refs_header);
+
+  var footnotes_header = $('<h3></h3');
+  footnotes_header.text('Footnotes');
+  $('.footnotes').children('hr').first().replaceWith(footnotes_header);
+
+  // move appendix-bottom entries to the bottom
+  $('.appendix-bottom').appendTo('.d-appendix').children().unwrap();
+  $('.appendix-bottom').remove();
+
+  // remove appendix if it's empty
+  if ($('.d-appendix').children().length === 0)
+    $('.d-appendix').remove();
+
+  // prepend separator above appendix
+  $('.d-appendix').before($('<hr class="section-separator" style="clear: both"/>'));
+
+  // trim code
+  $('pre>code').each(function(i, val) {
+    $(this).html($.trim($(this).html()));
+  });
+
+  // move posts-container right before article
+  $('.posts-container').insertBefore($('.d-article'));
+
+  $('body').addClass('downlevel');
+
+  on_load_complete();
+}
+
+
+function init_common() {
+
+  // jquery plugin to change element types
+  (function($) {
+    $.fn.changeElementType = function(newType) {
+      var attrs = {};
+
+      $.each(this[0].attributes, function(idx, attr) {
+        attrs[attr.nodeName] = attr.nodeValue;
+      });
+
+      this.replaceWith(function() {
+        return $("<" + newType + "/>", attrs).append($(this).contents());
+      });
+    };
+  })(jQuery);
+
+  // prevent underline for linked images
+  $('a > img').parent().css({'border-bottom' : 'none'});
+
+  // mark non-body figures created by knitr chunks as 100% width
+  $('.layout-chunk').each(function(i, val) {
+    var figures = $(this).find('img, .html-widget');
+    if ($(this).attr('data-layout') !== "l-body") {
+      figures.css('width', '100%');
+    } else {
+      figures.css('max-width', '100%');
+      figures.filter("[width]").each(function(i, val) {
+        var fig = $(this);
+        fig.css('width', fig.attr('width') + 'px');
+      });
+
+    }
+  });
+
+  // auto-append index.html to post-preview links in file: protocol
+  // and in rstudio ide preview
+  $('.post-preview').each(function(i, val) {
+    if (window.location.protocol === "file:")
+      $(this).attr('href', $(this).attr('href') + "index.html");
+  });
+
+  // get rid of index.html references in header
+  if (window.location.protocol !== "file:") {
+    $('.distill-site-header a[href]').each(function(i,val) {
+      $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+    });
+  }
+
+  // add class to pandoc style tables
+  $('tr.header').parent('thead').parent('table').addClass('pandoc-table');
+  $('.kable-table').children('table').addClass('pandoc-table');
+
+  // add figcaption style to table captions
+  $('caption').parent('table').addClass("figcaption");
+
+  // initialize posts list
+  if (window.init_posts_list)
+    window.init_posts_list();
+
+  // implmement disqus comment link
+  $('.disqus-comment-count').click(function() {
+    window.headroom_prevent_pin = true;
+    $('#disqus_thread').toggleClass('hidden');
+    if (!$('#disqus_thread').hasClass('hidden')) {
+      var offset = $(this).offset();
+      $(window).resize();
+      $('html, body').animate({
+        scrollTop: offset.top - 35
+      });
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (is_downlevel_browser())
+    init_downlevel();
+  else
+    window.addEventListener('WebComponentsReady', init_distill);
+});
+
+</script>
+
+<!--/radix_placeholder_distill-->
+  <script src="../../site_libs/jquery-1.11.3/jquery.min.js"></script>
+  <script src="../../site_libs/bowser-1.9.3/bowser.min.js"></script>
+  <script src="../../site_libs/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="../../site_libs/distill-2.2.21/template.v2.js"></script>
+  <!--radix_placeholder_site_in_header-->
+<!--/radix_placeholder_site_in_header-->
+
+
+</head>
+
+<body>
+
+<!--radix_placeholder_front_matter-->
+
+<script id="distill-front-matter" type="text/json">
+{"title":"Tidy Models Intro","description":"A short description of the post.","authors":[{"author":"Thinh Tran","authorURL":{},"affiliation":"&nbsp;","affiliationURL":"#"}],"publishedDate":"2020-09-21T00:00:00.000+07:00","citationText":"Tran, 2020"}
+</script>
+
+<!--/radix_placeholder_front_matter-->
+<!--radix_placeholder_navigation_before_body-->
+<header class="header header--fixed" role="banner">
+<nav class="distill-site-nav distill-site-header">
+<div class="nav-left">
+<a href="../../index.html" class="title">Data Roasts</a>
+</div>
+<div class="nav-right">
+<a href="../../index.html">Home</a>
+<a href="../../about.html">About</a>
+<a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
+</div>
+</nav>
+</header>
+<!--/radix_placeholder_navigation_before_body-->
+<!--radix_placeholder_site_before_body-->
+<!--/radix_placeholder_site_before_body-->
+
+<div class="d-title">
+<h1>Tidy Models Intro</h1>
+<p><p>A short description of the post.</p></p>
+</div>
+
+<div class="d-byline">
+  Thinh Tran true 
+  
+<br/>09-21-2020
+</div>
+
+<div class="d-article">
+<h1 id="prerequisites">Prerequisites</h1>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+library(tidyverse)
+library(tidymodels)
+library(modeldata)
+theme_set(theme_light())</code></pre>
+</div>
+<h1 id="ames-housing-data">Ames housing data</h1>
+Loading the dataset
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+data(ames)
+ames &lt;- ames %&gt;% janitor::clean_names()</code></pre>
+</div>
+<h2 id="explore-important-variables">Explore important variables</h2>
+<p>Start with the outcome we want to predict</p>
+<h3 id="sale-price">Sale Price</h3>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+ames %&gt;%
+  summarise(mean = mean(sale_price),
+            median = median(sale_price),
+            max = max(sale_price))</code></pre>
+<pre><code>
+# A tibble: 1 x 3
+     mean median    max
+    &lt;dbl&gt;  &lt;dbl&gt;  &lt;int&gt;
+1 180796. 160000 755000</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+ames %&gt;% 
+  ggplot(aes(sale_price)) + 
+  geom_histogram(bins = 50, alpha = .8) +
+  geom_vline(xintercept = 160000, lty = 2) + 
+  scale_x_continuous(labels = scales::dollar) +
+  labs(x = &quot;Sale Price&quot;)</code></pre>
+<p><img src="tidy-models-intro_files/figure-html5/unnamed-chunk-4-1.png" width="624" /></p>
+</div>
+<p>The data are right-skewed, There are more inexpensive houses than expensive ones. When facing with this outcome, the price should be transformed to log-scale. The advantages of doing this are no houses will be predicted with negative sales price and the errors in the predicting expensive houses will not have an excessive influence on the data</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+ames %&gt;% 
+  ggplot(aes(sale_price)) + 
+  geom_histogram(bins = 50, alpha = .8) +
+  geom_vline(xintercept = 160000, lty = 2) + 
+  scale_x_log10(labels = scales::dollar) + 
+  labs(x = &quot;Sale Price&quot;) </code></pre>
+<p><img src="tidy-models-intro_files/figure-html5/unnamed-chunk-5-1.png" width="624" /></p>
+</div>
+<p>While it’s not perfect but better for modelling instead of using the untransformed data. However, the drawback of transformation is related to interpretation. For examples, the RMSE is used to measure the performance of model in regression models. It uses the difference between the observed and predicted values in its calculations. It is difficult to understand by RMSE in log-scale.</p>
+<p>However, we stick with the log-transformation due to its superior in modelling</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+ames &lt;- ames %&gt;% 
+  mutate(sale_price = log10(sale_price))</code></pre>
+</div>
+<h3 id="spatial-information">Spatial information</h3>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+ames %&gt;% 
+  select(neighborhood, longitude, latitude)</code></pre>
+<pre><code>
+# A tibble: 2,930 x 3
+   neighborhood longitude latitude
+   &lt;fct&gt;            &lt;dbl&gt;    &lt;dbl&gt;
+ 1 North_Ames       -93.6     42.1
+ 2 North_Ames       -93.6     42.1
+ 3 North_Ames       -93.6     42.1
+ 4 North_Ames       -93.6     42.1
+ 5 Gilbert          -93.6     42.1
+ 6 Gilbert          -93.6     42.1
+ 7 Stone_Brook      -93.6     42.1
+ 8 Stone_Brook      -93.6     42.1
+ 9 Stone_Brook      -93.6     42.1
+10 Gilbert          -93.6     42.1
+# … with 2,920 more rows</code></pre>
+</div>
+<h1 id="spending-our-data">Spending our data</h1>
+<p>Steps to create a useful model: * parameter estimation * model selection * tuning * performance assessment</p>
+<p>At the beginning, there is usually an initial finite pool of data for all these tasks. The question is how this data is applied to these steps? Data spending is used for this consideration. One strategy is to spend a specific subset of data to determine which predictors are informative (when the data and predictors are abundant).</p>
+<h2 id="common-methods-for-splitting-data">Common methods for splitting data</h2>
+<p>For empirical model validation, the common approach is to split the existing pool of data into two distinct sets, training and testing sets. The <em>training set</em> is usually the majority of the data. These data are a sandbox for model building where different model can be fit, features engineering strategies are investigated. The <em>test set</em> is held in reserve until one or two models are chosen. It is used to determine the efficacy of the model.</p>
+<p>The most common method to split is simple random sampling.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+set.seed(123) # for reproducible purpose 
+
+# save the split information for an 80/20 split of data 
+ames_split &lt;- initial_split(ames, prob = 0.80)
+
+# Extract the training, testing set
+ames_train &lt;- training(ames_split)
+ames_test &lt;- testing(ames_split)</code></pre>
+</div>
+<p>Simple random sampling is doing well in many cases but not with a dramatic <em>class imbalance</em> (one class occurs much less frequently than another). Using a simple random sampe may allocate these infrequent class disproportionately.</p>
+<p>To avoid this, <em>stratified sampling</em> can be used. The training/test split is conducted separately within each class. For regression problems, the outcome data can be binned into quartiles and then stratified sampling conducted four separate times.</p>
+<p>The Ames housing data is right-skewed which has more inexpensive houses than expensive one. We can do the stratified random sample for 80/20 split</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+set.seed(123)
+ames_split &lt;- initial_split(ames, prob = 0.80, strata = sale_price)
+
+# train/test sets 
+ames_train &lt;- training(ames_split)
+ames_test &lt;- testing(ames_split)
+
+dim(ames_train)</code></pre>
+<pre><code>
+[1] 2199   74</code></pre>
+</div>
+<h2 id="what-proportion-should-be-used">What proportion should be used?</h2>
+<p>Highly dependent on the context of the problem in hand</p>
+<h2 id="what-about-validation-set">What about validation set?</h2>
+<p>Question: “How do we know what is the best if we don’t measure performance until the test set?” To avoid over fitting in which the models performance well in the training set but poorly on the test set. A validation set of data were held back and used to understand how well the model performed before testing</p>
+<h2 id="multi-level-data">Multi-level data</h2>
+<p>The data set will have multiple rows per experimental unit. Simple resampling across rows would lead to some data within an experimental unit being in the training set and others in the test set. Data splitting should occur at the independent experimental unit level of the data</p>
+<h1 id="features-engineering-with-recipes">Features engineering with recipes</h1>
+<p>Feature engineering includes the activities that reformat the predictor values to make them easier to use for a model such as transformation and encoding to best represent the characteristics of the data.</p>
+<p>Typical preprocessing to build better features: * correlation between predictors can be reduced by removing some of them * some predictors have missing values, they can be imputed by a sub-model * the distribution of some skewed predictors can benefit from transformation</p>
+<p>The recipe in tidymodels defines a series of steps for data processing without executing them. It’s only a specification of what should be done</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+simple_ames &lt;- ames_train %&gt;% 
+  recipe(sale_price ~ neighborhood + gr_liv_area + year_built + bldg_type, data = .) %&gt;% 
+  step_log(gr_liv_area, base = 10) %&gt;%
+  step_dummy(all_nominal())</code></pre>
+</div>
+<p>Benefit of using recipe: * The computations can be recycled across models * Broader set of data processing choices * Compact syntax * All data processing in one place</p>
+<h2 id="using-recipes">Using recipes</h2>
+<p>The <code>recipe()</code> has not executed yet. The next step is to estimate any quantities required by the steps using the <code>prep()</code>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+simple_ames &lt;- prep(simple_ames, training = ames_train)
+simple_ames</code></pre>
+<pre><code>
+Data Recipe
+
+Inputs:
+
+      role #variables
+   outcome          1
+ predictor          4
+
+Training data contained 2199 data points and no missing data.
+
+Operations:
+
+Log transformation on gr_liv_area [trained]
+Dummy variables from neighborhood, bldg_type [trained]</code></pre>
+</div>
+<p>The third phase is to apply the preprocessing operations to a data set using the <code>bake()</code>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+test_ex &lt;- bake(simple_ames, new_data = ames_test)
+test_ex</code></pre>
+<pre><code>
+# A tibble: 731 x 35
+   gr_liv_area year_built sale_price neighborhood_Co… neighborhood_Ol…
+         &lt;dbl&gt;      &lt;int&gt;      &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+ 1        3.32       1968       5.39                0                0
+ 2        3.26       1999       5.28                0                0
+ 3        3.07       1992       5.27                0                0
+ 4        3.27       2010       5.60                0                0
+ 5        3.04       1971       5.02                0                0
+ 6        3.23       2007       5.49                0                0
+ 7        3.29       2009       5.60                0                0
+ 8        3.19       2005       5.34                0                0
+ 9        3.35       2002       5.51                0                0
+10        3.12       2005       5.30                0                0
+# … with 721 more rows, and 30 more variables:
+#   neighborhood_Edwards &lt;dbl&gt;, neighborhood_Somerset &lt;dbl&gt;,
+#   neighborhood_Northridge_Heights &lt;dbl&gt;,
+#   neighborhood_Gilbert &lt;dbl&gt;, neighborhood_Sawyer &lt;dbl&gt;,
+#   neighborhood_Northwest_Ames &lt;dbl&gt;,
+#   neighborhood_Sawyer_West &lt;dbl&gt;, neighborhood_Mitchell &lt;dbl&gt;,
+#   neighborhood_Brookside &lt;dbl&gt;, neighborhood_Crawford &lt;dbl&gt;,
+#   neighborhood_Iowa_DOT_and_Rail_Road &lt;dbl&gt;,
+#   neighborhood_Timberland &lt;dbl&gt;, neighborhood_Northridge &lt;dbl&gt;,
+#   neighborhood_Stone_Brook &lt;dbl&gt;,
+#   neighborhood_South_and_West_of_Iowa_State_University &lt;dbl&gt;,
+#   neighborhood_Clear_Creek &lt;dbl&gt;,
+#   neighborhood_Meadow_Village &lt;dbl&gt;, neighborhood_Briardale &lt;dbl&gt;,
+#   neighborhood_Bloomington_Heights &lt;dbl&gt;,
+#   neighborhood_Veenker &lt;dbl&gt;, neighborhood_Northpark_Villa &lt;dbl&gt;,
+#   neighborhood_Blueste &lt;dbl&gt;, neighborhood_Greens &lt;dbl&gt;,
+#   neighborhood_Green_Hills &lt;dbl&gt;, neighborhood_Landmark &lt;dbl&gt;,
+#   neighborhood_Hayden_Lake &lt;dbl&gt;, bldg_type_TwoFmCon &lt;dbl&gt;,
+#   bldg_type_Duplex &lt;dbl&gt;, bldg_type_Twnhs &lt;dbl&gt;,
+#   bldg_type_TwnhsE &lt;dbl&gt;</code></pre>
+</div>
+<h2 id="encoding-qualitative-data-in-a-numeric-format">Encoding qualitative data in a numeric format</h2>
+<ul>
+<li><code>step_unknown()</code>: change the missing values to a dedicated factor level</li>
+<li><code>step_novel()</code>: allot a new level for anticipating the new factor level appear</li>
+<li><code>step_other()</code>: lump the factors, converting infrequent values to a catch-all level of “other”</li>
+<li><code>step_unorder()</code>: convert to regular factors</li>
+<li><code>step_ordinalscore()</code>: maps specific numeric values to each factor level
+<div class="layout-chunk" data-layout="l-body">
+</li>
+</ul>
+<pre class="r"><code>
+ames_train %&gt;% 
+  ggplot(aes(y = neighborhood)) + 
+  geom_bar()</code></pre>
+<p><img src="tidy-models-intro_files/figure-html5/unnamed-chunk-13-1.png" width="624" /></p>
+<pre class="r"><code>
+ames_train %&gt;%
+  mutate(neighborhood = fct_lump_prop(neighborhood, prop = 0.01)) %&gt;% 
+  count(neighborhood) %&gt;% 
+  ggplot(aes(n, neighborhood)) + 
+  geom_col()</code></pre>
+<p><img src="tidy-models-intro_files/figure-html5/unnamed-chunk-13-2.png" width="624" /></p>
+</div>
+<p>We can achieve this with the recipe()</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+simple_ames &lt;- recipe(sale_price ~ neighborhood + gr_liv_area + year_built + bldg_type, 
+                      data = ames_train) %&gt;% 
+  step_log(gr_liv_area , base = 10) %&gt;% 
+  step_other(neighborhood, threshold = 0.01) %&gt;% 
+  step_dummy(all_nominal())</code></pre>
+</div>
+<h2 id="interaction-terms">Interaction terms</h2>
+<p>Interaction effects involve two or more predictors. Such an effect occurs when one predictor has an effect on the outcome that is contingent on one or more other predictors. For example, if you were trying to predict your morning commute time, two potential predictors could be the amount of traffic and the time of day. However, the relationship between commute time and the amount of traffic is different for different times of day. In this case, you could add an interaction term between the two predictors to the model along with the original two predictors (which are called the “main effects”)</p>
+<p>In the Ames training set, the general living area differ for different building types</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+ames_train %&gt;% 
+  ggplot(aes(gr_liv_area, 10^sale_price)) + 
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = &quot;lm&quot;, se = FALSE) + 
+  facet_wrap(~ bldg_type) + 
+  scale_x_log10() + 
+  scale_y_log10()</code></pre>
+<p><img src="tidy-models-intro_files/figure-html5/unnamed-chunk-15-1.png" width="624" /></p>
+</div>
+<p>Again, we can achieve the interactions in recipe as</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+simple_ames &lt;- 
+  recipe(sale_price ~ neighborhood + gr_liv_area + year_built + bldg_type,
+         data = ames_train) %&gt;%
+  step_log(Gr_Liv_Area, base = 10) %&gt;% 
+  step_other(Neighborhood, threshold = 0.01) %&gt;% 
+  step_dummy(all_nominal()) %&gt;% 
+  step_interact(~ gr_liv_area:start_withs(&quot;bldg_type_&quot;))</code></pre>
+</div>
+<h2 id="feature-extraction">Feature Extraction</h2>
+<p>Another common method for representing multiple features at once is called feature extraction. It creates a new features from the predictors that capture the information in the broader set as a whole.</p>
+<p>Principal component analysis (PCA) tries to extract as much information from predictors set as possible using a smaller number of features. PCA is a linear extraction method, meaning the each new feature is a linear combination of original predictors. The PCA scores are uncorrelated with one another. PCA reduces the correlation between predictors.</p>
+<p>We can achieve with <code>step_pca()</code> in the recipes</p>
+<h2 id="row-sampling-steps">Row sampling steps</h2>
+<ul>
+<li><p><em>downsampling</em>: keep the minority class and take a random sample of majority class so that the class are balance</p></li>
+<li><p><em>upsampling</em>: replicates sample from the minority class to achieve the balance classes.</p></li>
+</ul>
+<h2 id="using-a-recipe-with-traditional-modelling-functions">Using a recipe with traditional modelling functions</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+ames_rec &lt;- 
+  recipe(sale_price ~ neighborhood + gr_liv_area + year_built + bldg_type + 
+           latitude + longitude, data = ames_train) %&gt;%
+  step_log(gr_liv_area, base = 10) %&gt;% 
+  step_other(neighborhood, threshold = 0.01) %&gt;% 
+  step_dummy(all_nominal()) %&gt;% 
+  step_interact( ~ gr_liv_area:starts_with(&quot;Bldg_Type_&quot;) ) %&gt;% 
+  step_ns(latitude, longitude, deg_free = 20)</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+ames_rec_prep &lt;- prep(ames_rec)
+
+ames_train_prep &lt;- bake(ames_rec_prep, new_data = ames_train)
+ames_test_prep &lt;- bake(ames_rec_prep, new_data = ames_test)
+
+# fit model 
+lm_fit &lt;- lm(sale_price ~ ., data = ames_train_prep)
+
+# get the result 
+glance(lm_fit)</code></pre>
+<pre><code>
+# A tibble: 1 x 12
+  r.squared adj.r.squared  sigma statistic p.value    df logLik    AIC
+      &lt;dbl&gt;         &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+1     0.822         0.816 0.0757      140.       0    70  2592. -5040.
+# … with 4 more variables: BIC &lt;dbl&gt;, deviance &lt;dbl&gt;,
+#   df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
+<pre class="r"><code>
+# coefficients
+tidy(lm_fit)</code></pre>
+<pre><code>
+# A tibble: 71 x 5
+   term                         estimate std.error statistic   p.value
+   &lt;chr&gt;                           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+ 1 (Intercept)                  -5.31e-1  0.296      -1.79   7.32e-  2
+ 2 gr_liv_area                   6.48e-1  0.0161     40.3    1.46e-264
+ 3 year_built                    1.94e-3  0.000139   13.9    2.69e- 42
+ 4 neighborhood_College_Creek   -8.98e-2  0.0332     -2.71   6.83e-  3
+ 5 neighborhood_Old_Town        -5.16e-2  0.0129     -4.01   6.20e-  5
+ 6 neighborhood_Edwards         -1.53e-1  0.0274     -5.57   2.91e-  8
+ 7 neighborhood_Somerset         3.64e-2  0.0189      1.92   5.50e-  2
+ 8 neighborhood_Northridge_Hei…  9.84e-2  0.0272      3.61   3.10e-  4
+ 9 neighborhood_Gilbert          7.28e-4  0.0219      0.0333 9.73e-  1
+10 neighborhood_Sawyer          -1.56e-1  0.0263     -5.93   3.59e-  9
+# … with 61 more rows</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+# apply on test set
+predict(lm_fit, ames_test_prep) %&gt;% head()</code></pre>
+<pre><code>
+       1        2        3        4        5        6 
+5.307819 5.300849 5.167501 5.518595 5.087885 5.488895 </code></pre>
+</div>
+<h2 id="tidy-a-recipe">Tidy a recipe</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+tidy(ames_rec)</code></pre>
+<pre><code>
+# A tibble: 5 x 6
+  number operation type     trained skip  id            
+   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;    &lt;lgl&gt;   &lt;lgl&gt; &lt;chr&gt;         
+1      1 step      log      FALSE   FALSE log_mmI2Z     
+2      2 step      other    FALSE   FALSE other_e3mwB   
+3      3 step      dummy    FALSE   FALSE dummy_Rh9Lx   
+4      4 step      interact FALSE   FALSE interact_pkwDF
+5      5 step      ns       FALSE   FALSE ns_ARVoa      </code></pre>
+</div>
+<h2 id="column-roles">Column roles</h2>
+<p>Call <code>recipes()</code>, it assigns roles to each of the columns, either predictor or outcomes. However, other roles can be assigned if needed by using: * <code>add_role()</code> * <code>remove_role()</code> * <code>update_role()</code></p>
+<h1 id="fitting-models-with-parsnip">Fitting models with parsnip</h1>
+<ul>
+<li><code>parsnip</code> provides a fluent and standardised interface for a variety of different models.</li>
+<li>reduce the memorisation of each package syntax</li>
+</ul>
+<p>There are 3 steps: * <strong>Specify the type of model based on its mathematical structure</strong>: linear regression, random forrest, … * <strong>Specify the engine for fitting model</strong>: the software package is used * <strong>Declare the mode of the model</strong>: regression/classification</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+lm_model &lt;- linear_reg() %&gt;%
+  set_engine(&quot;lm&quot;)
+
+lm_form_fit &lt;- 
+  lm_model %&gt;% 
+  fit(sale_price ~ longitude + latitude, data = ames_train)
+
+lm_form_fit</code></pre>
+<pre><code>
+parsnip model object
+
+Fit time:  7ms 
+
+Call:
+stats::lm(formula = sale_price ~ longitude + latitude, data = data)
+
+Coefficients:
+(Intercept)    longitude     latitude  
+   -316.368       -2.083        3.010  </code></pre>
+</div>
+<h2 id="use-the-model-results">Use the model results</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+lm_form_fit %&gt;% pluck(&quot;fit&quot;)</code></pre>
+<pre><code>
+Call:
+stats::lm(formula = sale_price ~ longitude + latitude, data = data)
+
+Coefficients:
+(Intercept)    longitude     latitude  
+   -316.368       -2.083        3.010  </code></pre>
+</div>
+<p>Base R result</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+lm_form_fit %&gt;% 
+  pluck(&quot;fit&quot;) %&gt;%
+  summary()</code></pre>
+<pre><code>
+Call:
+stats::lm(formula = sale_price ~ longitude + latitude, data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.01943 -0.09755 -0.01719  0.09854  0.57462 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -316.3679    14.8917  -21.25   &lt;2e-16 ***
+longitude     -2.0831     0.1334  -15.62   &lt;2e-16 ***
+latitude       3.0099     0.1849   16.27   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.1595 on 2196 degrees of freedom
+Multiple R-squared:  0.184, Adjusted R-squared:  0.1833 
+F-statistic: 247.6 on 2 and 2196 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<p>Broom</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+lm_form_fit %&gt;% 
+  pluck(&quot;fit&quot;) %&gt;%
+  tidy()</code></pre>
+<pre><code>
+# A tibble: 3 x 5
+  term        estimate std.error statistic  p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)  -316.      14.9       -21.2 3.04e-91
+2 longitude      -2.08     0.133     -15.6 3.21e-52
+3 latitude        3.01     0.185      16.3 2.58e-56</code></pre>
+</div>
+<h2 id="make-predictions">Make predictions</h2>
+<p>Conform the 3 rules: * The results are always tibble * The columns are always predictable * Same rows as the input data set</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+predict(lm_form_fit, new_data = ames_test)</code></pre>
+<pre><code>
+# A tibble: 731 x 1
+   .pred
+   &lt;dbl&gt;
+ 1  5.22
+ 2  5.29
+ 3  5.28
+ 4  5.26
+ 5  5.24
+ 6  5.33
+ 7  5.32
+ 8  5.32
+ 9  5.31
+10  5.31
+# … with 721 more rows</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+ames_test %&gt;% 
+  select(sale_price) %&gt;% 
+  bind_cols(predict(lm_form_fit, new_data = ames_test)) %&gt;% 
+  bind_cols(predict(lm_form_fit, new_data = ames_test, type = &quot;pred_int&quot;)) # add prediction interval </code></pre>
+<pre><code>
+# A tibble: 731 x 4
+   sale_price .pred .pred_lower .pred_upper
+        &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+ 1       5.39  5.22        4.90        5.53
+ 2       5.28  5.29        4.97        5.60
+ 3       5.27  5.28        4.96        5.59
+ 4       5.60  5.26        4.95        5.58
+ 5       5.02  5.24        4.93        5.55
+ 6       5.49  5.33        5.02        5.64
+ 7       5.60  5.32        5.01        5.64
+ 8       5.34  5.32        5.01        5.63
+ 9       5.51  5.31        5.00        5.63
+10       5.30  5.31        4.99        5.62
+# … with 721 more rows</code></pre>
+</div>
+<p>#s Workflow basics Combine modelling and preprocessing together</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+lm_model &lt;- 
+  linear_reg() %&gt;% 
+  set_engine(&quot;lm&quot;)
+
+lm_workflow &lt;- 
+  workflow() %&gt;% 
+  add_model(lm_model) %&gt;% 
+  add_formula(sale_price ~ longitude + latitude)
+
+# apply to fit model 
+lm_fit &lt;- fit(lm_workflow, ames_train)
+
+# remove formula 
+lm_workflow &lt;- lm_workflow %&gt;% 
+  remove_formula()</code></pre>
+</div>
+<h2 id="workflow-and-recipes">Workflow and Recipes</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+lm_workflow &lt;- lm_workflow %&gt;%
+  add_recipe(ames_rec)</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+# do prep(), bake(), fit() in one step 
+lm_fit &lt;- fit(lm_workflow, ames_train)
+
+# do bake() and predict() in one step 
+predict(lm_fit, ames_test)</code></pre>
+<pre><code>
+# A tibble: 731 x 1
+   .pred
+   &lt;dbl&gt;
+ 1  5.31
+ 2  5.30
+ 3  5.17
+ 4  5.52
+ 5  5.09
+ 6  5.49
+ 7  5.51
+ 8  5.43
+ 9  5.55
+10  5.24
+# … with 721 more rows</code></pre>
+</div>
+<p>If we need an object we can use <code>pull</code> to retrieve them</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+# recipe 
+lm_fit %&gt;% 
+  pull_workflow_prepped_recipe() %&gt;% 
+  tidy()</code></pre>
+<pre><code>
+# A tibble: 5 x 6
+  number operation type     trained skip  id            
+   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;    &lt;lgl&gt;   &lt;lgl&gt; &lt;chr&gt;         
+1      1 step      log      TRUE    FALSE log_mmI2Z     
+2      2 step      other    TRUE    FALSE other_e3mwB   
+3      3 step      dummy    TRUE    FALSE dummy_Rh9Lx   
+4      4 step      interact TRUE    FALSE interact_pkwDF
+5      5 step      ns       TRUE    FALSE ns_ARVoa      </code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+# fit 
+lm_fit %&gt;% 
+  pull_workflow_fit() %&gt;% 
+  tidy()</code></pre>
+<pre><code>
+# A tibble: 71 x 5
+   term                         estimate std.error statistic   p.value
+   &lt;chr&gt;                           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+ 1 (Intercept)                  -5.31e-1  0.296      -1.79   7.32e-  2
+ 2 gr_liv_area                   6.48e-1  0.0161     40.3    1.46e-264
+ 3 year_built                    1.94e-3  0.000139   13.9    2.69e- 42
+ 4 neighborhood_College_Creek   -8.98e-2  0.0332     -2.71   6.83e-  3
+ 5 neighborhood_Old_Town        -5.16e-2  0.0129     -4.01   6.20e-  5
+ 6 neighborhood_Edwards         -1.53e-1  0.0274     -5.57   2.91e-  8
+ 7 neighborhood_Somerset         3.64e-2  0.0189      1.92   5.50e-  2
+ 8 neighborhood_Northridge_Hei…  9.84e-2  0.0272      3.61   3.10e-  4
+ 9 neighborhood_Gilbert          7.28e-4  0.0219      0.0333 9.73e-  1
+10 neighborhood_Sawyer          -1.56e-1  0.0263     -5.93   3.59e-  9
+# … with 61 more rows</code></pre>
+</div>
+<h1 id="judging-model-effectiveness">Judging model effectiveness</h1>
+<h2 id="regresssion-metrics">Regresssion metrics</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+ames_test_res &lt;- predict(lm_fit, new_data = ames_test %&gt;% select(-sale_price))</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+ames_test_res &lt;- bind_cols(ames_test_res, ames_test %&gt;% select(sale_price))
+ames_test_res</code></pre>
+<pre><code>
+# A tibble: 731 x 2
+   .pred sale_price
+   &lt;dbl&gt;      &lt;dbl&gt;
+ 1  5.31       5.39
+ 2  5.30       5.28
+ 3  5.17       5.27
+ 4  5.52       5.60
+ 5  5.09       5.02
+ 6  5.49       5.49
+ 7  5.51       5.60
+ 8  5.43       5.34
+ 9  5.55       5.51
+10  5.24       5.30
+# … with 721 more rows</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+ames_test_res %&gt;% 
+  ggplot(aes(sale_price, .pred)) + 
+  geom_point(alpha = 0.5) + 
+  geom_abline(lty = 2) + 
+  labs(
+    x = &quot;Sale Price (log10)&quot;, 
+    y = &quot;Predicted Sale Price (log10)&quot;) + 
+  coord_obs_pred()</code></pre>
+<p><img src="tidy-models-intro_files/figure-html5/unnamed-chunk-34-1.png" width="624" /></p>
+</div>
+Let’s compute rmse
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+ames_test_res %&gt;% 
+  rmse(truth = sale_price, 
+       estimate = .pred)</code></pre>
+<pre><code>
+# A tibble: 1 x 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 rmse    standard      0.0808</code></pre>
+</div>
+<p>Compute multiple metrics at once</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+ames_metrics &lt;- metric_set(rmse, rsq, mae)
+
+ames_metrics(ames_test_res ,truth = sale_price, estimate = .pred)</code></pre>
+<pre><code>
+# A tibble: 3 x 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 rmse    standard      0.0808
+2 rsq     standard      0.795 
+3 mae     standard      0.0558</code></pre>
+</div>
+<h2 id="binary-classification-metrics">Binary Classification metrics</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+data(&quot;two_class_example&quot;)
+str(two_class_example)</code></pre>
+<pre><code>
+&#39;data.frame&#39;:   500 obs. of  4 variables:
+ $ truth    : Factor w/ 2 levels &quot;Class1&quot;,&quot;Class2&quot;: 2 1 2 1 2 1 1 1 2 2 ...
+ $ Class1   : num  0.00359 0.67862 0.11089 0.73516 0.01624 ...
+ $ Class2   : num  0.996 0.321 0.889 0.265 0.984 ...
+ $ predicted: Factor w/ 2 levels &quot;Class1&quot;,&quot;Class2&quot;: 2 1 2 1 2 1 1 1 2 2 ...</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+# Confusion matrix 
+two_class_example %&gt;% 
+  conf_mat(truth = truth, estimate = predicted)</code></pre>
+<pre><code>
+          Truth
+Prediction Class1 Class2
+    Class1    227     50
+    Class2     31    192</code></pre>
+<pre class="r"><code>
+# Accuracy 
+accuracy(two_class_example, truth = truth, estimate = predicted)</code></pre>
+<pre><code>
+# A tibble: 1 x 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy binary         0.838</code></pre>
+<pre class="r"><code>
+# Matthews correlation coefficients 
+mcc(two_class_example, truth, predicted)</code></pre>
+<pre><code>
+# A tibble: 1 x 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 mcc     binary         0.677</code></pre>
+<pre class="r"><code>
+# F1 metri 
+f_meas(two_class_example, truth, predicted)</code></pre>
+<pre><code>
+# A tibble: 1 x 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 f_meas  binary         0.849</code></pre>
+</div>
+<p>There are numerous classification metrics that use the predicted probabilities as inputs rather than the hard class predictions. For example, the receiver operating characteristic (ROC) curve computes the sensitivity and specificity over a continuum of different event thresholds.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+two_class_curve &lt;- roc_curve(two_class_example, truth, Class1)
+two_class_curve</code></pre>
+<pre><code>
+# A tibble: 502 x 3
+   .threshold specificity sensitivity
+        &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+ 1 -Inf           0                 1
+ 2    1.79e-7     0                 1
+ 3    4.50e-6     0.00413           1
+ 4    5.81e-6     0.00826           1
+ 5    5.92e-6     0.0124            1
+ 6    1.22e-5     0.0165            1
+ 7    1.40e-5     0.0207            1
+ 8    1.43e-5     0.0248            1
+ 9    2.38e-5     0.0289            1
+10    3.30e-5     0.0331            1
+# … with 492 more rows</code></pre>
+<pre class="r"><code>
+roc_auc(two_class_example, truth, Class1)</code></pre>
+<pre><code>
+# A tibble: 1 x 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 roc_auc binary         0.939</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+autoplot(two_class_curve)</code></pre>
+<p><img src="tidy-models-intro_files/figure-html5/unnamed-chunk-40-1.png" width="624" /></p>
+</div>
+<h1 id="resampling-for-evaluating-performance">Resampling for evaluating performance</h1>
+<h2 id="random-forrest">Random Forrest</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+rf_model &lt;- 
+  rand_forest(trees = 1000) %&gt;% 
+  set_engine(&quot;ranger&quot;) %&gt;% 
+  set_mode(&quot;regression&quot;)
+
+rf_workflow &lt;- workflow() %&gt;% 
+  add_formula(
+    sale_price ~ neighborhood + gr_liv_area + year_built + bldg_type + latitude + longitude
+  ) %&gt;% 
+  add_model(rf_model)</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+rf_fit &lt;- fit(rf_workflow, data = ames_train)</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+estimate_perf &lt;- function(model, dat ){
+  ames_metrics &lt;- metric_set(rmse, rsq)
+  
+  predict(model, dat) %&gt;% 
+    bind_cols(dat %&gt;% select(sale_price)) %&gt;%
+    ames_metrics(truth = sale_price, estimate = .pred)
+}</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+estimate_perf(rf_fit, ames_train)</code></pre>
+<pre><code>
+# A tibble: 2 x 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 rmse    standard      0.0351
+2 rsq     standard      0.964 </code></pre>
+<pre class="r"><code>
+estimate_perf(lm_fit, ames_train)</code></pre>
+<pre><code>
+# A tibble: 2 x 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 rmse    standard      0.0744
+2 rsq     standard      0.822 </code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+# test set
+estimate_perf(rf_fit, ames_test)</code></pre>
+<pre><code>
+# A tibble: 2 x 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 rmse    standard      0.0743
+2 rsq     standard      0.829 </code></pre>
+<pre class="r"><code>
+estimate_perf(lm_fit, ames_test)</code></pre>
+<pre><code>
+# A tibble: 2 x 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 rmse    standard      0.0808
+2 rsq     standard      0.795 </code></pre>
+</div>
+<p>The performance of random forest in test set is much worse than training set If the test set should not be used immediately, and re-predicting the training set is a bad idea, what should be done? <strong>Resampling methods</strong>, such as cross-validation or validation sets, are the solution.</p>
+<h2 id="resampling-methods">Resampling methods</h2>
+<p><strong>Resampling is only conducted on the training set</strong> * the model is fit with the <strong>analysis set</strong> * the model is evaluated with the <strong>assessment set</strong></p>
+<p>Suppose twenty iterations of resampling are conducted. This means that twenty separate models are fit on the analysis sets and the corresponding assessment sets produce twenty sets of performance statistics. The final estimate of performance for a model is the average of the twenty replicates of the statistics</p>
+<h3 id="cross-validation">Cross-Validation</h3>
+<p>While there are a number of variations, the most common cross-validation method is V-fold cross-validation. The data are randomly partitioned into V sets of roughly equal size (called the “folds”).</p>
+<p>For 3-fold cross-validation, each iteration, one fold is held out for assessment statistics and the remaining folds are substrate for the model. This process continues for each fold so that three models produce three sets of performance statistics.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+set.seed(55)
+ames_folds &lt;- vfold_cv(ames_train, v = 10)
+ames_folds</code></pre>
+<pre><code>
+#  10-fold cross-validation 
+# A tibble: 10 x 2
+   splits           id    
+   &lt;list&gt;           &lt;chr&gt; 
+ 1 &lt;split [2K/220]&gt; Fold01
+ 2 &lt;split [2K/220]&gt; Fold02
+ 3 &lt;split [2K/220]&gt; Fold03
+ 4 &lt;split [2K/220]&gt; Fold04
+ 5 &lt;split [2K/220]&gt; Fold05
+ 6 &lt;split [2K/220]&gt; Fold06
+ 7 &lt;split [2K/220]&gt; Fold07
+ 8 &lt;split [2K/220]&gt; Fold08
+ 9 &lt;split [2K/220]&gt; Fold09
+10 &lt;split [2K/219]&gt; Fold10</code></pre>
+</div>
+<h4 id="repeated-cross-validation">Repeated Cross-Validation</h4>
+<p>There are a variety of variations on cross-validation. The most important is repeated V-fold cross-validation. Depending on the size or other characteristics of the data, the resampling estimate produced by V-fold cross-validation may be excessively noisy. As with many statistical problems, one way to reduce noise is to gather more data. For cross-validation, this means averaging more than V statistics.</p>
+<p>To create R repeats of V-fold cross-validation, the same fold generation process is done R times to generate R collections of V partitions. Now, instead of averaging V statistics, VxR statistics produce the final resampling estimate. Due to the Central Limit Theorem, the summary statistics from each model tend toward a normal distribution.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+vfold_cv(ames_train, v = 10, repeats = 5)</code></pre>
+<pre><code>
+#  10-fold cross-validation repeated 5 times 
+# A tibble: 50 x 3
+   splits           id      id2   
+   &lt;list&gt;           &lt;chr&gt;   &lt;chr&gt; 
+ 1 &lt;split [2K/220]&gt; Repeat1 Fold01
+ 2 &lt;split [2K/220]&gt; Repeat1 Fold02
+ 3 &lt;split [2K/220]&gt; Repeat1 Fold03
+ 4 &lt;split [2K/220]&gt; Repeat1 Fold04
+ 5 &lt;split [2K/220]&gt; Repeat1 Fold05
+ 6 &lt;split [2K/220]&gt; Repeat1 Fold06
+ 7 &lt;split [2K/220]&gt; Repeat1 Fold07
+ 8 &lt;split [2K/220]&gt; Repeat1 Fold08
+ 9 &lt;split [2K/220]&gt; Repeat1 Fold09
+10 &lt;split [2K/219]&gt; Repeat1 Fold10
+# … with 40 more rows</code></pre>
+</div>
+<h4 id="leave-one-out-cross-validation">Leave-one-out cross validation</h4>
+<p>V is the number of data points in the training set. If there are n training set samples, n models are fit using n -1 rows of the training set</p>
+<p>LOO is computationally excessive and it may not have good statistical properties</p>
+<h4 id="monte-carlo-cross-validation">Monte Carlo Cross Validation</h4>
+<p>Like V-fold cross-validation, it allocates a fixed proportion of data to the assessment sets. The difference is that, for MCCV, this proportion of the data is randomly selected each time</p>
+<h3 id="validation-sets">Validation Sets</h3>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+set.seed(12)
+val_set &lt;- validation_split(ames_train, prop = 3/4)
+val_set</code></pre>
+<pre><code>
+# Validation Set Split (0.75/0.25)  
+# A tibble: 1 x 2
+  splits             id        
+  &lt;list&gt;             &lt;chr&gt;     
+1 &lt;split [1.6K/549]&gt; validation</code></pre>
+</div>
+<h3 id="bootstrapping">Bootstrapping</h3>
+<p>A bootstrap sample of the training set is a sample that is the same size as the training set but is drawn with replacement.</p>
+<p>Each data point has a 63.2% chance of inclusion in the training set at least once. The assessment set contains all of the training set samples that were not selected for the analysis set (on average, with 36.8% of the training set). When bootstrapping, the assessment set is often called the “out-of-bag” sample</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+bootstraps(ames_train, times = 5)</code></pre>
+<pre><code>
+# Bootstrap sampling 
+# A tibble: 5 x 2
+  splits             id        
+  &lt;list&gt;             &lt;chr&gt;     
+1 &lt;split [2.2K/790]&gt; Bootstrap1
+2 &lt;split [2.2K/814]&gt; Bootstrap2
+3 &lt;split [2.2K/797]&gt; Bootstrap3
+4 &lt;split [2.2K/827]&gt; Bootstrap4
+5 &lt;split [2.2K/794]&gt; Bootstrap5</code></pre>
+</div>
+<h3 id="rolling-forecasting-origin-resampling">Rolling Forecasting Origin Resampling</h3>
+<p>When the data have a strong time component, a resampling method should support modeling to estimate seasonal and other temporal trends within the data</p>
+<h2 id="estimating-performance">Estimating performance</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+keep_pred &lt;- control_resamples(save_pred = TRUE)
+
+set.seed(130)
+rf_res &lt;- 
+  rf_workflow %&gt;% 
+  fit_resamples(resamples = ames_folds, control = keep_pred)
+
+rf_res</code></pre>
+<pre><code>
+# Resampling results
+# 10-fold cross-validation 
+# A tibble: 10 x 5
+   splits         id     .metrics       .notes        .predictions    
+   &lt;list&gt;         &lt;chr&gt;  &lt;list&gt;         &lt;list&gt;        &lt;list&gt;          
+ 1 &lt;split [2K/22… Fold01 &lt;tibble [2 × … &lt;tibble [0 ×… &lt;tibble [220 × …
+ 2 &lt;split [2K/22… Fold02 &lt;tibble [2 × … &lt;tibble [0 ×… &lt;tibble [220 × …
+ 3 &lt;split [2K/22… Fold03 &lt;tibble [2 × … &lt;tibble [0 ×… &lt;tibble [220 × …
+ 4 &lt;split [2K/22… Fold04 &lt;tibble [2 × … &lt;tibble [0 ×… &lt;tibble [220 × …
+ 5 &lt;split [2K/22… Fold05 &lt;tibble [2 × … &lt;tibble [0 ×… &lt;tibble [220 × …
+ 6 &lt;split [2K/22… Fold06 &lt;tibble [2 × … &lt;tibble [0 ×… &lt;tibble [220 × …
+ 7 &lt;split [2K/22… Fold07 &lt;tibble [2 × … &lt;tibble [0 ×… &lt;tibble [220 × …
+ 8 &lt;split [2K/22… Fold08 &lt;tibble [2 × … &lt;tibble [0 ×… &lt;tibble [220 × …
+ 9 &lt;split [2K/22… Fold09 &lt;tibble [2 × … &lt;tibble [0 ×… &lt;tibble [220 × …
+10 &lt;split [2K/21… Fold10 &lt;tibble [2 × … &lt;tibble [0 ×… &lt;tibble [219 × …</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+# metrics for each example 
+collect_metrics(rf_res, summarize = FALSE)</code></pre>
+<pre><code>
+# A tibble: 20 x 4
+   id     .metric .estimator .estimate
+   &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+ 1 Fold01 rmse    standard      0.0668
+ 2 Fold01 rsq     standard      0.884 
+ 3 Fold02 rmse    standard      0.0625
+ 4 Fold02 rsq     standard      0.843 
+ 5 Fold03 rmse    standard      0.0818
+ 6 Fold03 rsq     standard      0.792 
+ 7 Fold04 rmse    standard      0.0675
+ 8 Fold04 rsq     standard      0.864 
+ 9 Fold05 rmse    standard      0.0746
+10 Fold05 rsq     standard      0.852 
+11 Fold06 rmse    standard      0.0668
+12 Fold06 rsq     standard      0.846 
+13 Fold07 rmse    standard      0.0762
+14 Fold07 rsq     standard      0.813 
+15 Fold08 rmse    standard      0.0719
+16 Fold08 rsq     standard      0.827 
+17 Fold09 rmse    standard      0.0710
+18 Fold09 rsq     standard      0.826 
+19 Fold10 rmse    standard      0.0691
+20 Fold10 rsq     standard      0.848 </code></pre>
+<pre class="r"><code>
+# average 
+collect_metrics(rf_res)</code></pre>
+<pre><code>
+# A tibble: 2 x 5
+  .metric .estimator   mean     n std_err
+  &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+1 rmse    standard   0.0708    10 0.00176
+2 rsq     standard   0.840     10 0.00829</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+# collect predictions 
+assess_res &lt;- collect_predictions(rf_res)
+assess_res</code></pre>
+<pre><code>
+# A tibble: 2,199 x 4
+   id     .pred  .row sale_price
+   &lt;chr&gt;  &lt;dbl&gt; &lt;int&gt;      &lt;dbl&gt;
+ 1 Fold01  5.24    11       5.23
+ 2 Fold01  5.36    47       5.35
+ 3 Fold01  5.42    52       5.46
+ 4 Fold01  5.15    94       5.15
+ 5 Fold01  5.16   111       5.15
+ 6 Fold01  5.13   115       5.04
+ 7 Fold01  5.11   117       5.16
+ 8 Fold01  5.10   118       5.11
+ 9 Fold01  5.15   134       5.03
+10 Fold01  5.06   140       5.18
+# … with 2,189 more rows</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+assess_res %&gt;% 
+  ggplot(aes(sale_price, .pred)) + 
+  geom_point(alpha = 0.15) + 
+  geom_abline(col = &quot;red&quot;) + 
+  coord_obs_pred() + 
+  labs(
+    x = &quot;Sales Price&quot;,
+    y = &quot;Predicted Sale Price&quot;
+  )</code></pre>
+<p><img src="tidy-models-intro_files/figure-html5/unnamed-chunk-53-1.png" width="624" /></p>
+</div>
+<p>There was one house in the training set with a low observed sale price that is significantly overpredicted by the model. Which house was that?</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+over_predicted &lt;- assess_res %&gt;% 
+  mutate(residual = sale_price - .pred) %&gt;% 
+  arrange(desc(abs(residual))) %&gt;% 
+  slice(1)
+
+ames_train %&gt;% 
+  slice(over_predicted$.row) %&gt;% 
+  select(gr_liv_area, neighborhood, year_built, bedroom_abv_gr, full_bath)</code></pre>
+<pre><code>
+# A tibble: 1 x 5
+  gr_liv_area neighborhood         year_built bedroom_abv_gr full_bath
+        &lt;int&gt; &lt;fct&gt;                     &lt;int&gt;          &lt;int&gt;     &lt;int&gt;
+1         733 Iowa_DOT_and_Rail_R…       1952              2         1</code></pre>
+</div>
+<h2 id="parallel-processing">Parallel Processing</h2>
+Train multiple model simultaneously
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+# The number of physical cores 
+parallel::detectCores(logical = TRUE)</code></pre>
+<pre><code>
+[1] 8</code></pre>
+</div>
+<h1 id="resampled-performance-statistics">Resampled performance statistics</h1>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+lm_with_splines_res &lt;- 
+  lm_workflow %&gt;% 
+  fit_resamples(resamples = ames_folds, control = keep_pred)</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+no_spline_rec &lt;- 
+  recipe(sale_price ~ neighborhood + gr_liv_area + year_built + bldg_type + 
+           latitude + longitude, data = ames_train) %&gt;%
+  # Recall that Sale_Price is pre-logged
+  step_log(gr_liv_area, base = 10) %&gt;% 
+  step_other(neighborhood, threshold = 0.01) %&gt;% 
+  step_dummy(all_nominal()) %&gt;% 
+  step_interact( ~ gr_liv_area:starts_with(&quot;Bldg_Type_&quot;) ) 
+
+lm_no_splines_res &lt;- lm_workflow %&gt;%
+  remove_recipe() %&gt;% 
+  add_recipe(no_spline_rec) %&gt;%
+  fit_resamples(resamples = ames_folds, control = keep_pred)</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+collect_metrics(lm_with_splines_res)</code></pre>
+<pre><code>
+# A tibble: 2 x 5
+  .metric .estimator   mean     n std_err
+  &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+1 rmse    standard   0.0771    10 0.00211
+2 rsq     standard   0.808     10 0.0115 </code></pre>
+<pre class="r"><code>
+collect_metrics(lm_no_splines_res)</code></pre>
+<pre><code>
+# A tibble: 2 x 5
+  .metric .estimator   mean     n std_err
+  &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+1 rmse    standard   0.0782    10 0.00192
+2 rsq     standard   0.802     10 0.0113 </code></pre>
+</div>
+<p>Considering these results, it appears that the additional terms do not profoundly improve the mean RMSE or R2 statistics. The difference is small, but it might be larger than the experimental noise in the system, i.e., considered statistically significant. We can formally test the hypothesis that the additional terms increase R2.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+no_splines_rsq &lt;- 
+  collect_metrics(lm_no_splines_res, summarize = FALSE) %&gt;% 
+  filter(.metric == &quot;rsq&quot;) %&gt;% 
+  select(id, `no splines` = .estimate)</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+splines_rsq &lt;- 
+  collect_metrics(lm_with_splines_res, summarize = FALSE) %&gt;% 
+  filter(.metric == &quot;rsq&quot;) %&gt;% 
+  select(id, `with splines` = .estimate)</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+rf_rsq &lt;- 
+  collect_metrics(rf_res, summarize = FALSE) %&gt;% 
+  filter(.metric == &quot;rsq&quot;) %&gt;% 
+  select(id, `random forest` = .estimate)</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+rsq_estimate &lt;- no_splines_rsq %&gt;% 
+  inner_join(splines_rsq, by = &quot;id&quot;) %&gt;% 
+  inner_join(rf_rsq, by = &quot;id&quot;)</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+corrr::correlate(rsq_estimate %&gt;% select(-id))</code></pre>
+<pre><code>
+# A tibble: 3 x 4
+  rowname       `no splines` `with splines` `random forest`
+  &lt;chr&gt;                &lt;dbl&gt;          &lt;dbl&gt;           &lt;dbl&gt;
+1 no splines          NA              0.977           0.887
+2 with splines         0.977         NA               0.849
+3 random forest        0.887          0.849          NA    </code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+rsq_estimate %&gt;% 
+  pivot_longer(cols = c(-id), names_to = &quot;model&quot;, values_to = &quot;rsq&quot;) %&gt;% 
+  mutate(model = reorder(model, rsq)) %&gt;% 
+  ggplot(aes(model, rsq, group = id, colour = id)) + 
+  geom_line(alpha = 0.5, lwd = 1.25) + 
+  theme(legend.position = &quot;none&quot;) + 
+  labs(
+    x = NULL,
+    y = expression(paste(R^2, &quot;statistics&quot;)))</code></pre>
+<p><img src="tidy-models-intro_files/figure-html5/unnamed-chunk-64-1.png" width="624" /></p>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+rsq_estimate %&gt;% 
+  with( cor.test(`no splines`, `random forest`) ) %&gt;% 
+  tidy() %&gt;% 
+  select(estimate, starts_with(&quot;conf&quot;))</code></pre>
+<pre><code>
+# A tibble: 1 x 3
+  estimate conf.low conf.high
+     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1    0.887    0.582     0.973</code></pre>
+</div>
+<h2 id="simple-hypothesis-testing">Simple hypothesis testing</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+compare_lm &lt;- rsq_estimate %&gt;% 
+  mutate(difference = `with splines` - `no splines`)
+
+lm(difference ~ 1, data = compare_lm) %&gt;% 
+  tidy(conf.int = TRUE) %&gt;% 
+  select(estimate, p.value, starts_with(&quot;conf&quot;))</code></pre>
+<pre><code>
+# A tibble: 1 x 4
+  estimate p.value conf.low conf.high
+     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1  0.00587  0.0393 0.000360    0.0114</code></pre>
+</div>
+Alternatively
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+rsq_estimate %&gt;% 
+  with(t.test(`with splines`, `no splines`, paired = TRUE)) %&gt;% 
+  tidy() %&gt;% 
+  select(estimate, p.value, starts_with(&quot;conf&quot;))</code></pre>
+<pre><code>
+# A tibble: 1 x 4
+  estimate p.value conf.low conf.high
+     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1  0.00587  0.0393 0.000360    0.0114</code></pre>
+</div>
+<h2 id="bayesian-methods">Bayesian methods</h2>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<!--radix_placeholder_article_footer-->
+<!--/radix_placeholder_article_footer-->
+</div>
+
+<div class="d-appendix">
+</div>
+
+
+<!--radix_placeholder_site_after_body-->
+<!--/radix_placeholder_site_after_body-->
+<!--radix_placeholder_appendices-->
+<div class="appendix-bottom"></div>
+<!--/radix_placeholder_appendices-->
+<!--radix_placeholder_navigation_after_body-->
+<!--/radix_placeholder_navigation_after_body-->
+
+</body>
+
+</html>
